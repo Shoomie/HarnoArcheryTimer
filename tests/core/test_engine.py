@@ -17,6 +17,7 @@ from archerytimer.core.models import (
     PhaseSpec,
     Sequence,
     SessionConfig,
+    Snapshot,
     Whistle,
 )
 
@@ -282,3 +283,13 @@ def test_primary_starts_then_resumes_but_never_mid_round_or_in_emergency():
     eng.handle(Command("emergency"))
     eng.handle(Command("primary"))  # locked out
     assert eng.snapshot().emergency
+
+
+def test_back_is_published_to_the_screens():
+    _, eng, events = make(total_ends=3)
+    eng.handle(Command("next"))
+    snaps = [e for e in events if isinstance(e, Snapshot)]
+    before = len(snaps)
+    eng.handle(Command("back"))
+    snaps = [e for e in events if isinstance(e, Snapshot)]
+    assert len(snaps) == before + 1 and snaps[-1].round_index == 0

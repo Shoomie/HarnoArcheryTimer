@@ -5,54 +5,54 @@
       "env": "esp32-s3-devkitc-1",
       "chip": "esp32s3",
       "version": "esp-0.4.0",
-      "size": 788512,
-      "sha256": "37e4bd44942f22be53489dc52df65b4a33a35df5158070ba1fc910e7ab1c6ebf",
-      "built": "2026-10-04 22:04",
+      "size": 775088,
+      "sha256": "816c2fd3acb84412c05a217c14db12f527429ec590a54fe072f5d243bda26d00",
+      "built": "2026-10-04 22:40",
       "file": "esp32-s3-devkitc-1.bin"
     },
     {
       "env": "esp32-s3-standalone",
       "chip": "esp32s3",
       "version": "esp-0.4.0",
-      "size": 788528,
-      "sha256": "d3932f797ec5fd0ddf78521d24986844199d0f9954a88f8206d1bf31b5680fcd",
-      "built": "2026-10-04 22:04",
+      "size": 775088,
+      "sha256": "a2c7590dff7fd8afcaa2a3b03fcdafc082cf4d3c7d88ade37c5b9ca74cec000d",
+      "built": "2026-10-04 22:40",
       "file": "esp32-s3-standalone.bin"
     },
     {
       "env": "esp32c3-supermini",
       "chip": "esp32c3",
       "version": "esp-0.4.0",
-      "size": 844992,
-      "sha256": "c81a4f67b606c842508972d81f8018bf0332fda6f0ec64c01d737220f491ac19",
-      "built": "2026-10-04 22:05",
+      "size": 830064,
+      "sha256": "ee3eb29487793173f2baf1bbb7846c48cee5250163182b9903cdf252c5542735",
+      "built": "2026-10-04 22:41",
       "file": "esp32c3-supermini.bin"
     },
     {
       "env": "esp32c3-standalone",
       "chip": "esp32c3",
       "version": "esp-0.4.0",
-      "size": 844992,
-      "sha256": "3aa97f1b32451d5323d10ff3b7c29c387ae0dec294b24c761783dd060a3bec20",
-      "built": "2026-10-04 22:05",
+      "size": 830080,
+      "sha256": "f9d2f7942df6f4c2a54440948dbb082bd074eec3e5575ee3819930231acfecea",
+      "built": "2026-10-04 22:41",
       "file": "esp32c3-standalone.bin"
     },
     {
       "env": "esp32-wroom-32d",
       "chip": "esp32",
       "version": "esp-0.4.0",
-      "size": 847824,
-      "sha256": "76fc431b41b1975483dda57ecc1540015957db4b687ae20cdae854e59a0bcf86",
-      "built": "2026-10-04 22:05",
+      "size": 832000,
+      "sha256": "73c194c9b2cfcc19d16d48144a4b9064af7429be41ffb37819b14b424efb3acb",
+      "built": "2026-10-04 22:41",
       "file": "esp32-wroom-32d.bin"
     },
     {
       "env": "esp32-wroom-32d-standalone",
       "chip": "esp32",
       "version": "esp-0.4.0",
-      "size": 847824,
-      "sha256": "3385834e8c3b5400426e114ef1f098c0f7ed31df7678e1883e1ccc65c5b505aa",
-      "built": "2026-10-04 22:05",
+      "size": 832016,
+      "sha256": "9c2663f2a11b53d72023e4f121bbe03ff154bdeaada454dd7d0dc05cdc82242c",
+      "built": "2026-10-04 22:42",
       "file": "esp32-wroom-32d-standalone.bin"
     }
   ]

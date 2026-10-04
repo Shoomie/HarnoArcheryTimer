@@ -306,3 +306,29 @@ def test_sound_dedup_and_replay_guard():
     assert [w.count for w in played] == [1, 3]
     f.on_feed(timer(8, 5, 900))  # too old
     assert [w.count for w in played] == [1, 3]
+
+
+def test_one_late_frame_is_not_a_jump_but_a_persistent_later_deadline_is():
+    clock = FakeClock()
+    leader = Leader(clock, CFG)
+    f, _ = make(clock)
+    leader.feed(f)
+    leader.engine.handle(Command("primary"))
+    clock.advance(11 * NS_PER_S)
+    leader.engine.poll()
+    f.on_feed(FeedTimer(leader.timer().to_bytes()))
+    base = latest(f).deadline_ns
+    clock.advance(200 * NS_PER_MS)
+    t = leader.timer()
+    late = replace(t, remaining_ms=t.remaining_ms + 130)  # one frame that arrived 130 ms late
+    f.on_feed(FeedTimer(late.to_bytes()))
+    assert latest(f).deadline_ns == base
+    clock.advance(200 * NS_PER_MS)
+    f.on_feed(FeedTimer(leader.timer().to_bytes()))  # the next frame is on time again
+    assert abs(latest(f).deadline_ns - base) <= 5 * NS_PER_MS
+    # A real extension (the next frames all report a later end) is followed after the confirm time.
+    for _ in range(4):
+        clock.advance(200 * NS_PER_MS)
+        t = leader.timer()
+        f.on_feed(FeedTimer(replace(t, remaining_ms=t.remaining_ms + 5000).to_bytes()))
+    assert latest(f).deadline_ns >= base + 4_900 * NS_PER_MS

@@ -226,6 +226,12 @@ again; flashing a merged release image also wipes the ESP32's stored keys. Nativ
 **Joiner stays silent after pairing (found 2026-10-04):** a box that booted keyless had `enabled` (radio on) false, so it switched its radio off
 right after PAIR_ACC; now `tryPairAcc` sets it (and stores `radio=1`). Replugging a paired box also fixed it before (key present at boot).
 
+**Two-board test (2026-10-04):** `scripts/hw_e2e_two_boards.py COM_A COM_B` passes 34 of 34 on two C3 Super Minis (radio-only join without network, rights, restarts,
+removal and re-pair). Found and fixed on the way: board stalled for ~1 s per remote command (flash scan plus Arduino error-log spam on the serial line;
+now `-DCORE_DEBUG_LEVEL=0` and a save only when the counter moved), rights added after accepting were refused by the board's own copy (board now lets all
+actions through, the core decides), REVOKE kept un-pairing a re-accepted device, `back` never published a new state (engine), one late radio frame
+moved the follower's deadline up to 130 ms (now needs 350 ms of agreement). Not tried: Pi, S3, WROOM in this suite, more than two boards, range.
+
 **Not verified:** any firmware (never compiled or flashed: buttons, ESP-NOW, `$S` ids, reworked `main.cpp`);
 real MCU/light/horn hardware; the cluster on a real LAN; ESP-NOW range/latency; anything on the Pi (the M8 install script and systemd units, KMSDRM under `PAMName=login`,
 GPU path, audio output, GPIO, performance, benchmarks); multi-monitor placement; touchscreen; gamepad; local

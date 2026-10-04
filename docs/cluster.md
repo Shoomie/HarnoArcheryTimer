@@ -12,7 +12,9 @@ remotes, tap the new device (name = the laptop's host name, plus MAC), pick its 
 mesh key and a remote key, the follower then shows the timer from the radio feed and can send the commands it was granted.
 A box that already holds an old key: "Pair with the main timer again" (Network screen) sends a one-shot `$C,mkey,<32 zeros>`
 (`SerialWorker.forget_radio_keys`, never remembered) and the ESP32 forgets both keys and searches again. Works the same on a
-Pi or any other host. **Not yet run between two real C3 boards** (tested: unit tests, compile; keyless pairing C3/WROOM).
+Pi or any other host. **Tested on two real C3 boards on one PC (2026-10-04, `scripts/hw_e2e_two_boards.py`, 34 checks, no network):** join, accept, session mirrored
+(lights agree; countdown deadline 8-31 ms behind the master, median ~23 ms = two USB hops), commands and rights over the radio, restarts of both cores,
+remove with automatic re-pair, "pair again", fail-safe when the master stops.
 
 ## Discovering new radio devices (2026-10-04)
 

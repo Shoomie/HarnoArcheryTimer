@@ -338,6 +338,7 @@ class Engine:
             self._phase_gen += 1
             self._sched.clear()
             self._round -= 1
+            self._dirty = True  # without this the new round was never published to the screens
 
     def _reset(self) -> None:
         self._cancel_phase()

@@ -603,9 +603,13 @@ void onPairReq(const uint8_t *mac, const PairReqPayload &q, uint32_t now) {
 }
 
 void onCmdFrame(const uint8_t *mac, const CmdPayload &c, uint32_t now) {
+  const RemoteEntry *before = gate.find(mac);
+  const uint32_t counterBefore = before ? before->last_counter : 0;
   const CmdDecision d = gate.onCmd(mac, c.counter, c.action, role == HostRole::M && hostAliveNow);
+  // Persist only when the counter moved: every command arrives as ~17 repeats, and a flash scan per repeat starved the
+  // serial heartbeat (the host saw the link flap).
   const RemoteEntry *r = gate.find(mac);
-  if (r) keysSaveRemote(*r);  // persists the counter (no-op when unchanged)
+  if (r && r->last_counter != counterBefore) keysSaveRemote(*r);
   if (d.kind == CmdDecision::Forward) {
     char body[64];
     if (hostcore::fmtPairCommand(body, sizeof body, mac, c.action, c.counter)) hostBody(body);
@@ -1022,7 +1026,13 @@ bool radioPairAccept(const uint8_t mac[6], uint8_t mask) {
   }
   derive_pair_key(shared, mac, ownMac, k);
   meshRandom(rk, 16);
-  if (!gate.addRemote(mac, rk, mask & 0x7F, 0)) {  // table full
+  // The host (core) decides what a remote may do and can change it later; this table only has to know the remote, so all
+  // seven actions pass here (`mask` stays the core's business). Otherwise rights added in the menu after accepting were
+  // refused on the board before the core ever saw the command.
+  (void)mask;
+  for (auto &rv : revoked)  // accepting a device again ends its revocation, or it would un-pair itself again
+    if (rv.used && memcmp(rv.mac, mac, 6) == 0) rv.used = false;
+  if (!gate.addRemote(mac, rk, 0x7F, 0)) {  // table full
     memset(shared, 0, sizeof shared);
     return false;
   }

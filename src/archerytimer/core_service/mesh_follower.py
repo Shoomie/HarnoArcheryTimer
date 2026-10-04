@@ -51,6 +51,9 @@ log = logging.getLogger("archerytimer.meshfollower")
 FEED_GRACE_NS = NS_PER_S  # no TIMER for this long: RED, upstream down
 SOUND_REPLAY_GUARD_MS = 400  # a sound seen in TIMER starts only if younger than this
 JITTER_NS = 100 * NS_PER_MS  # deadline estimates closer than this are the same phase
+LATE_CONFIRM_NS = (
+    350 * NS_PER_MS
+)  # a later deadline must persist this long to count (delays are one-sided)
 _LIGHT_BITS = ((1, Light.GREEN), (2, Light.YELLOW), (4, Light.RED))
 
 Feed = Union[FeedTimer, FeedSound, FeedSession]
@@ -112,6 +115,7 @@ class MeshFollower:
         self._seq = 0
         self._key: Optional[tuple[object, ...]] = None
         self._deadline = 0
+        self._late_since = 0  # first of a run of frames that all say "later"; 0 = none
         self._last_sound: Optional[tuple[int, int]] = None  # (master_id, sound_seq)
         self._last_snap: Optional[Snapshot] = None
         self._stop = threading.Event()
@@ -266,9 +270,24 @@ class MeshFollower:
         candidate = now + rem_ns if running else now
         # TIMER repeats share one remaining_ms, so later copies look later: keep the earliest
         # estimate, but follow a real jump (a phase that was extended, a resync).
-        moved = candidate < self._deadline or candidate - self._deadline > JITTER_NS
-        if key != self._key or (running and not frozen and moved):
+        # A late frame (a USB or radio delay) always looks like a later deadline, never an earlier
+        # one, so one late frame is no real jump: only a later deadline that keeps being reported
+        # is (a phase that was extended).
+        if key != self._key:
             self._deadline = candidate
+            self._late_since = 0
+        elif running and not frozen:
+            if candidate < self._deadline:
+                self._deadline = candidate
+                self._late_since = 0
+            elif candidate - self._deadline > JITTER_NS:
+                if not self._late_since:
+                    self._late_since = now
+                elif now - self._late_since >= LATE_CONFIRM_NS:
+                    self._deadline = candidate
+                    self._late_since = 0
+            else:
+                self._late_since = 0
         self._key = key
         deadline = self._deadline
         n = max(1, len(s.groups))

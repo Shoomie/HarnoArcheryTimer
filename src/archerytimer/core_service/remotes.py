@@ -136,6 +136,7 @@ class RemoteRegistry:
         self._remotes = self._store.load()
         self._pending: dict[str, Pending] = {}
         self._open_until_ns: Optional[int] = None
+        self._mcu_open = False
         self._ignored: set[str] = set()  # rejected during this search: not listed again
         self._discover_until_ns: Optional[int] = (
             None  # keep the window open (and renew it) until then
@@ -233,11 +234,9 @@ class RemoteRegistry:
 
     def on_pair_state(self, state: mt.PairState) -> None:
         """The MCU's own view of its pairing window (it has its own timeout)."""
-        log.info(
-            "MCU pairing window %s (%d s left)",
-            "open" if state.open else "closed",
-            state.seconds_left,
-        )
+        if state.open != self._mcu_open:  # log the change, not the once-a-second countdown
+            self._mcu_open = state.open
+            log.info("MCU pairing window %s", "open" if state.open else "closed")
         if not state.open and self._open_until_ns is not None:
             self._open_until_ns = None
             self._pending.clear()
@@ -340,6 +339,7 @@ class RemoteRegistry:
             if command is not None:
                 source = f"remote:{remote.name}"
                 command = Command(command.name, {**command.args, "source": source})
+                log.info("remote %s: %s accepted", remote.name, action)
                 result = RESULT_DONE
         if remote is None:
             log.warning("command from unknown remote %s denied", rc.mac)
