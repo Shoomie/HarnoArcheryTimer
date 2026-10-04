@@ -1,0 +1,11 @@
+{
+  "name": "hostcore",
+  "version": "0.1.0",
+  "description": "Portable C++17 serial-frame logic of docs/protocol.md (v1 + serial v2): checksum, line framing, command parsing and validation, frame builders. No Arduino includes.",
+  "frameworks": "*",
+  "platforms": "*",
+  "build": {
+    "srcDir": "src",
+    "flags": "-std=gnu++17"
+  }
+}

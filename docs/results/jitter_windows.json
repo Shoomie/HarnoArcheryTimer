@@ -1,0 +1,1177 @@
+{
+  "system": {
+    "python": "3.14.6",
+    "implementation": "CPython",
+    "os": "Windows 11 (10.0.26200)",
+    "machine": "AMD64",
+    "cpu_count": 16,
+    "board": null,
+    "pygame": "2.5.8",
+    "pygame_ce": true,
+    "sdl": "2.32.10"
+  },
+  "args": {
+    "topology": "all",
+    "load": "all",
+    "duration": 20.0,
+    "period_ms": 100.0,
+    "backend": "gpu",
+    "fullscreen": false,
+    "headless": false,
+    "switchinterval": 0.0005,
+    "timer_res": "both",
+    "wait": "both",
+    "hybrid_margin_ms": 20.0,
+    "hogs": 0,
+    "engine_nice": null,
+    "engine_cpu": null,
+    "json": "docs/results/jitter_windows.json",
+    "child": null
+  },
+  "results": [
+    {
+      "case": {
+        "topology": "threaded",
+        "load": "none",
+        "timer_res": false,
+        "wait": "event",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "lateness": {
+        "n": 200,
+        "p50_ms": 8.3181,
+        "p99_ms": 15.9062,
+        "max_ms": 16.3554,
+        "mean_ms": 8.372669
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0272,
+        "p99_ms": 0.0558,
+        "max_ms": 0.0918,
+        "mean_ms": 0.028981
+      },
+      "timer_res_active": false,
+      "tuning": {},
+      "ui_cpu_percent": 0.29866742004121716,
+      "driver": null
+    },
+    {
+      "case": {
+        "topology": "threaded",
+        "load": "idle",
+        "timer_res": false,
+        "wait": "event",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 19,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 1.3019,
+        "p99_ms": 2.5089,
+        "max_ms": 39.778,
+        "mean_ms": 1.5034495
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0232,
+        "p99_ms": 0.0416,
+        "max_ms": 0.1499,
+        "mean_ms": 0.0243465
+      },
+      "timer_res_active": false,
+      "tuning": {},
+      "ui_cpu_percent": 0.8969236494677936,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "threaded",
+        "load": "animating",
+        "timer_res": false,
+        "wait": "event",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 1118,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 1.0683,
+        "p99_ms": 1.7866,
+        "max_ms": 65.0064,
+        "mean_ms": 1.3720105
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0229,
+        "p99_ms": 0.0347,
+        "max_ms": 2.3759,
+        "mean_ms": 0.0354845
+      },
+      "timer_res_active": false,
+      "tuning": {},
+      "ui_cpu_percent": 12.70643173958749,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "threaded",
+        "load": "overload",
+        "timer_res": false,
+        "wait": "event",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 87,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 1.181,
+        "p99_ms": 2.6772,
+        "max_ms": 41.9852,
+        "mean_ms": 1.39722
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0217,
+        "p99_ms": 0.0377,
+        "max_ms": 2.0488,
+        "mean_ms": 0.0333625
+      },
+      "timer_res_active": false,
+      "tuning": {},
+      "ui_cpu_percent": 6.6517896178086025,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "process",
+        "load": "none",
+        "timer_res": false,
+        "wait": "event",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "lateness": {
+        "n": 200,
+        "p50_ms": 8.0109,
+        "p99_ms": 15.8909,
+        "max_ms": 16.3122,
+        "mean_ms": 8.12353
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.028,
+        "p99_ms": 0.0646,
+        "max_ms": 0.0744,
+        "mean_ms": 0.029118
+      },
+      "timer_res_active": false,
+      "tuning": {},
+      "ui_cpu_percent": 0.14807120903172272,
+      "driver": null
+    },
+    {
+      "case": {
+        "topology": "process",
+        "load": "idle",
+        "timer_res": false,
+        "wait": "event",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 21,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 7.2919,
+        "p99_ms": 15.8867,
+        "max_ms": 15.9795,
+        "mean_ms": 8.0020955
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0279,
+        "p99_ms": 0.0489,
+        "max_ms": 0.06,
+        "mean_ms": 0.028288
+      },
+      "timer_res_active": false,
+      "tuning": {},
+      "ui_cpu_percent": 0.36903183994907873,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "process",
+        "load": "animating",
+        "timer_res": false,
+        "wait": "event",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 1257,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 7.9589,
+        "p99_ms": 15.8004,
+        "max_ms": 16.6693,
+        "mean_ms": 8.395382
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0273,
+        "p99_ms": 0.0695,
+        "max_ms": 0.0785,
+        "mean_ms": 0.028373
+      },
+      "timer_res_active": false,
+      "tuning": {},
+      "ui_cpu_percent": 13.759815897570858,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "process",
+        "load": "overload",
+        "timer_res": false,
+        "wait": "event",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 1498,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 8.5307,
+        "p99_ms": 15.6689,
+        "max_ms": 15.7236,
+        "mean_ms": 8.3590195
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0299,
+        "p99_ms": 0.0675,
+        "max_ms": 0.2976,
+        "mean_ms": 0.03368
+      },
+      "timer_res_active": false,
+      "tuning": {},
+      "ui_cpu_percent": 100.45632012674525,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "threaded",
+        "load": "none",
+        "timer_res": true,
+        "wait": "event",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "lateness": {
+        "n": 200,
+        "p50_ms": 1.2268,
+        "p99_ms": 2.2014,
+        "max_ms": 2.28,
+        "mean_ms": 1.1864945
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0217,
+        "p99_ms": 0.0364,
+        "max_ms": 0.0534,
+        "mean_ms": 0.022742
+      },
+      "timer_res_active": true,
+      "tuning": {},
+      "ui_cpu_percent": 0.07453250671720643,
+      "driver": null
+    },
+    {
+      "case": {
+        "topology": "threaded",
+        "load": "idle",
+        "timer_res": true,
+        "wait": "event",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 21,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 1.019,
+        "p99_ms": 2.2885,
+        "max_ms": 2.4143,
+        "mean_ms": 1.2165705
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0243,
+        "p99_ms": 0.0552,
+        "max_ms": 0.1987,
+        "mean_ms": 0.026231
+      },
+      "timer_res_active": true,
+      "tuning": {},
+      "ui_cpu_percent": 0.6711716102880643,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "threaded",
+        "load": "animating",
+        "timer_res": true,
+        "wait": "event",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 1250,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 1.1231,
+        "p99_ms": 2.3985,
+        "max_ms": 10.3031,
+        "mean_ms": 1.1740185
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.02,
+        "p99_ms": 0.0526,
+        "max_ms": 0.073,
+        "mean_ms": 0.022889
+      },
+      "timer_res_active": true,
+      "tuning": {},
+      "ui_cpu_percent": 13.7121579852763,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "threaded",
+        "load": "overload",
+        "timer_res": true,
+        "wait": "event",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 1494,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 1.2194,
+        "p99_ms": 5.7374,
+        "max_ms": 6.574,
+        "mean_ms": 1.756647
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0252,
+        "p99_ms": 0.2274,
+        "max_ms": 0.2851,
+        "mean_ms": 0.0388515
+      },
+      "timer_res_active": true,
+      "tuning": {},
+      "ui_cpu_percent": 100.6671890451971,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "process",
+        "load": "none",
+        "timer_res": true,
+        "wait": "event",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "lateness": {
+        "n": 200,
+        "p50_ms": 1.3168,
+        "p99_ms": 2.2509,
+        "max_ms": 2.3911,
+        "mean_ms": 1.226767
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0213,
+        "p99_ms": 0.0347,
+        "max_ms": 0.0403,
+        "mean_ms": 0.0216405
+      },
+      "timer_res_active": true,
+      "tuning": {},
+      "ui_cpu_percent": 0.36939674780505,
+      "driver": null
+    },
+    {
+      "case": {
+        "topology": "process",
+        "load": "idle",
+        "timer_res": true,
+        "wait": "event",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 22,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 1.0438,
+        "p99_ms": 2.3819,
+        "max_ms": 2.4943,
+        "mean_ms": 1.1626035
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.022,
+        "p99_ms": 0.0372,
+        "max_ms": 0.0412,
+        "mean_ms": 0.022942
+      },
+      "timer_res_active": true,
+      "tuning": {},
+      "ui_cpu_percent": 0.5178744134826689,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "process",
+        "load": "animating",
+        "timer_res": true,
+        "wait": "event",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 1264,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 1.3713,
+        "p99_ms": 2.1346,
+        "max_ms": 2.459,
+        "mean_ms": 1.2778
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0204,
+        "p99_ms": 0.0357,
+        "max_ms": 0.2491,
+        "mean_ms": 0.0223185
+      },
+      "timer_res_active": true,
+      "tuning": {},
+      "ui_cpu_percent": 13.971900277179563,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "process",
+        "load": "overload",
+        "timer_res": true,
+        "wait": "event",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 1497,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 1.0528,
+        "p99_ms": 2.1943,
+        "max_ms": 2.2576,
+        "mean_ms": 1.0859795
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0265,
+        "p99_ms": 0.0589,
+        "max_ms": 0.1222,
+        "mean_ms": 0.028117
+      },
+      "timer_res_active": true,
+      "tuning": {},
+      "ui_cpu_percent": 99.67700972106789,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "threaded",
+        "load": "none",
+        "timer_res": false,
+        "wait": "hybrid",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "lateness": {
+        "n": 200,
+        "p50_ms": 0.2614,
+        "p99_ms": 0.5217,
+        "max_ms": 1.0416,
+        "mean_ms": 0.262754
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0245,
+        "p99_ms": 0.038,
+        "max_ms": 0.0422,
+        "mean_ms": 0.0245185
+      },
+      "timer_res_active": false,
+      "tuning": {},
+      "ui_cpu_percent": 0.14936303690791938,
+      "driver": null
+    },
+    {
+      "case": {
+        "topology": "threaded",
+        "load": "idle",
+        "timer_res": false,
+        "wait": "hybrid",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 20,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 0.2712,
+        "p99_ms": 0.7386,
+        "max_ms": 1.46,
+        "mean_ms": 0.2782595
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0235,
+        "p99_ms": 0.0348,
+        "max_ms": 0.0391,
+        "mean_ms": 0.023678
+      },
+      "timer_res_active": false,
+      "tuning": {},
+      "ui_cpu_percent": 0.37290211119347,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "threaded",
+        "load": "animating",
+        "timer_res": false,
+        "wait": "hybrid",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 1253,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 0.2488,
+        "p99_ms": 0.9648,
+        "max_ms": 1.1313,
+        "mean_ms": 0.2951905
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0227,
+        "p99_ms": 0.034,
+        "max_ms": 0.0399,
+        "mean_ms": 0.023022
+      },
+      "timer_res_active": false,
+      "tuning": {},
+      "ui_cpu_percent": 13.215653279897627,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "threaded",
+        "load": "overload",
+        "timer_res": false,
+        "wait": "hybrid",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 1508,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 0.4277,
+        "p99_ms": 3.8652,
+        "max_ms": 4.1386,
+        "mean_ms": 0.825188
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0222,
+        "p99_ms": 1.2557,
+        "max_ms": 2.5278,
+        "mean_ms": 0.1148615
+      },
+      "timer_res_active": false,
+      "tuning": {},
+      "ui_cpu_percent": 105.55720996534993,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "process",
+        "load": "none",
+        "timer_res": false,
+        "wait": "hybrid",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "lateness": {
+        "n": 200,
+        "p50_ms": 0.2399,
+        "p99_ms": 0.5428,
+        "max_ms": 0.6683,
+        "mean_ms": 0.2478625
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0208,
+        "p99_ms": 0.0593,
+        "max_ms": 0.0829,
+        "mean_ms": 0.025147
+      },
+      "timer_res_active": false,
+      "tuning": {},
+      "ui_cpu_percent": 0.5173855939944664,
+      "driver": null
+    },
+    {
+      "case": {
+        "topology": "process",
+        "load": "idle",
+        "timer_res": false,
+        "wait": "hybrid",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 21,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 0.312,
+        "p99_ms": 0.6621,
+        "max_ms": 1.2101,
+        "mean_ms": 0.309208
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0207,
+        "p99_ms": 0.0363,
+        "max_ms": 0.0502,
+        "mean_ms": 0.0220435
+      },
+      "timer_res_active": false,
+      "tuning": {},
+      "ui_cpu_percent": 0.5182727893417346,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "process",
+        "load": "animating",
+        "timer_res": false,
+        "wait": "hybrid",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 1263,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 0.2717,
+        "p99_ms": 0.8642,
+        "max_ms": 1.0402,
+        "mean_ms": 0.287179
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0209,
+        "p99_ms": 0.0692,
+        "max_ms": 0.0818,
+        "mean_ms": 0.027742
+      },
+      "timer_res_active": false,
+      "tuning": {},
+      "ui_cpu_percent": 13.021518196137498,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "process",
+        "load": "overload",
+        "timer_res": false,
+        "wait": "hybrid",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 134,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 0.2827,
+        "p99_ms": 0.8919,
+        "max_ms": 1.7123,
+        "mean_ms": 0.2813775
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0221,
+        "p99_ms": 0.072,
+        "max_ms": 0.0736,
+        "mean_ms": 0.026682
+      },
+      "timer_res_active": false,
+      "tuning": {},
+      "ui_cpu_percent": 9.399097969840886,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "threaded",
+        "load": "none",
+        "timer_res": true,
+        "wait": "hybrid",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "lateness": {
+        "n": 200,
+        "p50_ms": 0.2271,
+        "p99_ms": 1.308,
+        "max_ms": 1.7472,
+        "mean_ms": 0.271082
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0209,
+        "p99_ms": 0.0325,
+        "max_ms": 0.0347,
+        "mean_ms": 0.022146
+      },
+      "timer_res_active": true,
+      "tuning": {},
+      "ui_cpu_percent": 0.22402086644330915,
+      "driver": null
+    },
+    {
+      "case": {
+        "topology": "threaded",
+        "load": "idle",
+        "timer_res": true,
+        "wait": "hybrid",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 21,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 0.2818,
+        "p99_ms": 0.8762,
+        "max_ms": 1.8724,
+        "mean_ms": 0.295705
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0227,
+        "p99_ms": 0.0359,
+        "max_ms": 0.049,
+        "mean_ms": 0.0236345
+      },
+      "timer_res_active": true,
+      "tuning": {},
+      "ui_cpu_percent": 1.1177609935077388,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "threaded",
+        "load": "animating",
+        "timer_res": true,
+        "wait": "hybrid",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 192,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 0.2811,
+        "p99_ms": 1.3849,
+        "max_ms": 123.9329,
+        "mean_ms": 1.035219
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0233,
+        "p99_ms": 0.0501,
+        "max_ms": 0.0663,
+        "mean_ms": 0.024014
+      },
+      "timer_res_active": true,
+      "tuning": {},
+      "ui_cpu_percent": 3.806867579081045,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "threaded",
+        "load": "overload",
+        "timer_res": true,
+        "wait": "hybrid",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 134,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 0.2711,
+        "p99_ms": 2.184,
+        "max_ms": 63.6734,
+        "mean_ms": 0.616183
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0203,
+        "p99_ms": 0.0519,
+        "max_ms": 2.5222,
+        "mean_ms": 0.033977
+      },
+      "timer_res_active": true,
+      "tuning": {},
+      "ui_cpu_percent": 10.225857881104329,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "process",
+        "load": "none",
+        "timer_res": true,
+        "wait": "hybrid",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "lateness": {
+        "n": 200,
+        "p50_ms": 0.3207,
+        "p99_ms": 0.8469,
+        "max_ms": 1.6859,
+        "mean_ms": 0.3301745
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0195,
+        "p99_ms": 0.0326,
+        "max_ms": 0.0346,
+        "mean_ms": 0.020202
+      },
+      "timer_res_active": true,
+      "tuning": {},
+      "ui_cpu_percent": 0.22178520115337097,
+      "driver": null
+    },
+    {
+      "case": {
+        "topology": "process",
+        "load": "idle",
+        "timer_res": true,
+        "wait": "hybrid",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 21,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 0.303,
+        "p99_ms": 0.629,
+        "max_ms": 1.1974,
+        "mean_ms": 0.286895
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0199,
+        "p99_ms": 0.0323,
+        "max_ms": 0.0352,
+        "mean_ms": 0.020436
+      },
+      "timer_res_active": true,
+      "tuning": {},
+      "ui_cpu_percent": 0.5176252007937278,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "process",
+        "load": "animating",
+        "timer_res": true,
+        "wait": "hybrid",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 1263,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 0.2597,
+        "p99_ms": 0.8217,
+        "max_ms": 1.1233,
+        "mean_ms": 0.2692
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0218,
+        "p99_ms": 0.0279,
+        "max_ms": 0.0379,
+        "mean_ms": 0.0221335
+      },
+      "timer_res_active": true,
+      "tuning": {},
+      "ui_cpu_percent": 13.318570469458097,
+      "driver": "windows/gpu"
+    },
+    {
+      "case": {
+        "topology": "process",
+        "load": "overload",
+        "timer_res": true,
+        "wait": "hybrid",
+        "hybrid_margin_ms": 20.0,
+        "duration": 20.0,
+        "period_ms": 100.0,
+        "backend": "gpu",
+        "fullscreen": false,
+        "switchinterval": 0.0005,
+        "hogs": 0,
+        "engine_nice": null,
+        "engine_cpu": null
+      },
+      "ui_frames": 1516,
+      "lateness": {
+        "n": 200,
+        "p50_ms": 0.2986,
+        "p99_ms": 1.0784,
+        "max_ms": 1.328,
+        "mean_ms": 0.317243
+      },
+      "handoff": {
+        "n": 200,
+        "p50_ms": 0.0231,
+        "p99_ms": 0.0548,
+        "max_ms": 0.0614,
+        "mean_ms": 0.0259135
+      },
+      "timer_res_active": true,
+      "tuning": {},
+      "ui_cpu_percent": 100.40947237183131,
+      "driver": "windows/gpu"
+    }
+  ]
+}

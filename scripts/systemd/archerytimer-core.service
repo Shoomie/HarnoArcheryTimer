@@ -1,0 +1,33 @@
+# Archery timer core service (engine, serial, audio, IPC). Headless; keeps running if the UI dies.
+# Options (leader/follower, ports, ESP-NOW) go in /etc/archerytimer/core.env: CORE_ARGS="--leader 192.168.1.10"
+[Unit]
+Description=Archery timer core (engine, lights, sound)
+After=local-fs.target sound.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=archery
+Group=archery
+SupplementaryGroups=dialout audio gpio
+WorkingDirectory=/opt/archerytimer
+Environment=PYTHONUNBUFFERED=1
+Environment=PYGAME_HIDE_SUPPORT_PROMPT=1
+Environment=SDL_VIDEODRIVER=dummy
+Environment=SDL_AUDIODRIVER=alsa
+EnvironmentFile=-/etc/archerytimer/core.env
+ExecStart=/opt/archerytimer/.venv/bin/python -m archerytimer.core_service $CORE_ARGS
+# SIGTERM makes the core go RED and silent first; the MCU watchdog covers a hard kill.
+KillSignal=SIGTERM
+TimeoutStopSec=5
+Restart=always
+RestartSec=1
+# Lets the core raise its priority (os.nice) without running as root.
+AmbientCapabilities=CAP_SYS_NICE
+CapabilityBoundingSet=CAP_SYS_NICE
+NoNewPrivileges=true
+ProtectSystem=full
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

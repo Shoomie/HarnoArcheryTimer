@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Virtual environments and tool caches
+.venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# Firmware build output
+.pio/
+
+# Local editor / assistant settings
+.claude/settings.local.json
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

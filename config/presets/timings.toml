@@ -1,0 +1,37 @@
+# Quick timer lengths for the Timers screen. Clubs can add their own in
+# <user data dir>/presets/*.toml, same format.
+# PLACEHOLDERS: not confirmed against World Archery / SBF rules; edit freely.
+#
+#   prep_s   preparation ("get ready") time before shooting starts
+#   shoot_s  total shooting time
+#   warn_s   yellow warning this many seconds before the end (0 = no warning)
+
+[timing.t60]
+name = { sv = "60 s", en = "60 s" }
+prep_s = 10
+shoot_s = 60
+warn_s = 15
+
+[timing.t90]
+name = { sv = "90 s", en = "90 s" }
+prep_s = 10
+shoot_s = 90
+warn_s = 30
+
+[timing.t120]
+name = { sv = "120 s", en = "120 s" }
+prep_s = 10
+shoot_s = 120
+warn_s = 30
+
+[timing.t180]
+name = { sv = "180 s", en = "180 s" }
+prep_s = 10
+shoot_s = 180
+warn_s = 30
+
+[timing.t240]
+name = { sv = "240 s", en = "240 s" }
+prep_s = 10
+shoot_s = 240
+warn_s = 30

@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "archerytimer"
+version = "0.0.1"
+description = "Low-latency archery timing and display system with USB-serial lights and sound."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "pygame-ce>=2.4",
+    "pyserial>=3.5",
+    "platformdirs>=3",
+    "tomli>=2; python_version < '3.11'",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7",
+    "ruff>=0.6",
+    "mypy>=1.8",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+src = ["src", "scripts", "tests"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["_benchutil", "_scene"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+ignore = ["UP006", "UP007", "UP035", "UP045", "RUF001"]  # py39 runtime typing
+
+[tool.mypy]
+files = ["src/archerytimer"]
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "archerytimer.common.clock",
+    "archerytimer.core.*",
+    "archerytimer.ipc.*",
+    "archerytimer.hardware.protocol",
+]
+strict = true
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["E501", "RUF001", "RUF059", "SIM105"]
+"scripts/**" = ["E501"]

@@ -1,0 +1,47 @@
+# Presets: the cards on the setup screen. Clubs can add their own files here or in
+# <user data dir>/presets/*.toml; no code change needed.
+# PLACEHOLDERS: ends, practice ends and line options are NOT confirmed against World Archery / SBF
+# rules. The timing of each preset comes from its sequence in config/sequences/.
+#
+#   sequence       id of a sequence the core knows
+#   groups         default line rotation (the rotation options below are offered on step 2)
+#   ends           number of counted ends
+#   practice_ends  practice ends shot first (not counted)
+#   open_ended     true: no fixed number of ends (free training); the numbers are only a bound
+#   line_options   optional; list of line rotations, each a list of group names
+
+[preset.indoor_18]
+name = { sv = "Inomhus 18 m", en = "Indoor 18 m" }
+sequence = "indoor_3arrows"
+groups = ["AB", "CD"]
+ends = 10
+practice_ends = 2
+
+[preset.outdoor_6]
+name = { sv = "Utomhus kval, 6 pilar", en = "Outdoor qualification, 6 arrows" }
+sequence = "outdoor_6arrows"
+groups = ["AB", "CD"]
+ends = 6
+practice_ends = 2
+
+[preset.outdoor_3]
+name = { sv = "Utomhus kval, 3 pilar", en = "Outdoor qualification, 3 arrows" }
+sequence = "outdoor_3arrows"
+groups = ["AB", "CD"]
+ends = 12
+practice_ends = 2
+
+[preset.practice_ends]
+name = { sv = "Provskott", en = "Practice ends" }
+sequence = "indoor_3arrows"
+groups = ["AB", "CD"]
+ends = 0
+practice_ends = 2
+
+[preset.free_training]
+name = { sv = "Träning", en = "Free training" }
+sequence = "indoor_3arrows"
+groups = ["AB"]
+ends = 0
+practice_ends = 99
+open_ended = true

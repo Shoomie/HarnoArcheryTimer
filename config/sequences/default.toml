@@ -1,0 +1,26 @@
+# PLACEHOLDER timings. NOT confirmed against World Archery / SBF rules.
+# Edit freely; nothing in the code depends on these numbers.
+
+[sequence.indoor_3arrows]
+name = { sv = "Inomhus 18 m, 3 pilar", en = "Indoor 18 m, 3 arrows" }
+phases = [
+  { id = "PREP",  duration_s = 10,  light = "RED",   whistle_on_start = 2 },
+  { id = "SHOOT", duration_s = 120, light = "GREEN", whistle_on_start = 1, warn_at_s = 30, warn_light = "YELLOW" },
+  { id = "END",   duration_s = 0,   light = "RED",   whistle_on_start = 3 },
+]
+
+[sequence.outdoor_6arrows]
+name = { sv = "Utomhus kval, 6 pilar", en = "Outdoor qualification, 6 arrows" }
+phases = [
+  { id = "PREP",  duration_s = 10,  light = "RED",   whistle_on_start = 2 },
+  { id = "SHOOT", duration_s = 240, light = "GREEN", whistle_on_start = 1, warn_at_s = 30, warn_light = "YELLOW" },
+  { id = "END",   duration_s = 0,   light = "RED",   whistle_on_start = 3 },
+]
+
+[sequence.outdoor_3arrows]
+name = { sv = "Utomhus kval, 3 pilar", en = "Outdoor qualification, 3 arrows" }
+phases = [
+  { id = "PREP",  duration_s = 10,  light = "RED",   whistle_on_start = 2 },
+  { id = "SHOOT", duration_s = 120, light = "GREEN", whistle_on_start = 1, warn_at_s = 30, warn_light = "YELLOW" },
+  { id = "END",   duration_s = 0,   light = "RED",   whistle_on_start = 3 },
+]

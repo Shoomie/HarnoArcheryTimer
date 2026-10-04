@@ -1,0 +1,11 @@
+{
+  "name": "meshcore",
+  "version": "0.1.0",
+  "description": "Portable C++17 core of the archery mesh v2 (docs/mesh.md): frame codec, HMAC, dedupe, arbiter, CMD gate, pairing, session store, X25519. No Arduino/ESP includes.",
+  "frameworks": "*",
+  "platforms": "*",
+  "build": {
+    "srcDir": "src",
+    "flags": "-std=gnu++17"
+  }
+}

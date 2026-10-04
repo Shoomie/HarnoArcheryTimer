@@ -1,0 +1,273 @@
+{
+  "system": {
+    "python": "3.14.6",
+    "implementation": "CPython",
+    "os": "Windows 11 (10.0.26200)",
+    "machine": "AMD64",
+    "cpu_count": 16,
+    "board": null,
+    "pygame": "2.5.8",
+    "pygame_ce": true,
+    "sdl": "2.32.10"
+  },
+  "args": {
+    "backend": "all",
+    "mode": "all",
+    "duration": 10.0,
+    "resolution": "1920x1080",
+    "fps": 60.0,
+    "fullscreen": false,
+    "vsync": false,
+    "headless": false,
+    "json": "docs/results/render_windows.json",
+    "child": false
+  },
+  "results": [
+    {
+      "backend": "gpu",
+      "mode": "A",
+      "video_driver": "windows",
+      "render_driver_hint": "(SDL default)",
+      "canvas": "1920x1080",
+      "fps_cap": 60.0,
+      "vsync": false,
+      "frames": 599,
+      "fps": 59.9,
+      "cpu_percent": 35.139167445148665,
+      "work": {
+        "n": 599,
+        "p50_ms": 1.2465,
+        "p99_ms": 1.3984,
+        "max_ms": 2.7304,
+        "mean_ms": 1.2550652754590983
+      },
+      "present": {
+        "n": 599,
+        "p50_ms": 4.7376,
+        "p99_ms": 6.076,
+        "max_ms": 7.1675,
+        "mean_ms": 4.7208757929883145
+      },
+      "frame_total": {
+        "n": 599,
+        "p50_ms": 5.9936,
+        "p99_ms": 7.386,
+        "max_ms": 8.9002,
+        "mean_ms": 5.975941068447412
+      },
+      "interval": {
+        "n": 598,
+        "p50_ms": 16.6955,
+        "p99_ms": 17.2355,
+        "max_ms": 17.4654,
+        "mean_ms": 16.665510702341138
+      },
+      "aborted": false
+    },
+    {
+      "backend": "gpu",
+      "mode": "B",
+      "video_driver": "windows",
+      "render_driver_hint": "(SDL default)",
+      "canvas": "1920x1080",
+      "fps_cap": 60.0,
+      "vsync": false,
+      "frames": 599,
+      "fps": 59.9,
+      "cpu_percent": 13.898301700240761,
+      "work": {
+        "n": 599,
+        "p50_ms": 1.5939,
+        "p99_ms": 2.1599,
+        "max_ms": 2.7996,
+        "mean_ms": 1.6205919866444072
+      },
+      "present": {
+        "n": 599,
+        "p50_ms": 0.5931,
+        "p99_ms": 0.9851,
+        "max_ms": 1.3168,
+        "mean_ms": 0.6241505843071786
+      },
+      "frame_total": {
+        "n": 599,
+        "p50_ms": 2.2008,
+        "p99_ms": 3.0881,
+        "max_ms": 3.8098,
+        "mean_ms": 2.244742570951586
+      },
+      "interval": {
+        "n": 598,
+        "p50_ms": 16.6843,
+        "p99_ms": 17.2111,
+        "max_ms": 18.2594,
+        "mean_ms": 16.6643627090301
+      },
+      "aborted": false
+    },
+    {
+      "backend": "gpu",
+      "mode": "C",
+      "video_driver": "windows",
+      "render_driver_hint": "(SDL default)",
+      "canvas": "1920x1080",
+      "fps_cap": 60.0,
+      "vsync": false,
+      "frames": 10,
+      "fps": 1.0,
+      "cpu_percent": 0.15550704797253295,
+      "work": {
+        "n": 10,
+        "p50_ms": 2.2338,
+        "p99_ms": 2.9957,
+        "max_ms": 2.9957,
+        "mean_ms": 2.29549
+      },
+      "present": {
+        "n": 10,
+        "p50_ms": 0.7903,
+        "p99_ms": 0.992,
+        "max_ms": 0.992,
+        "mean_ms": 0.84756
+      },
+      "frame_total": {
+        "n": 10,
+        "p50_ms": 3.0534,
+        "p99_ms": 3.9877,
+        "max_ms": 3.9877,
+        "mean_ms": 3.14305
+      },
+      "interval": {
+        "n": 9,
+        "p50_ms": 999.9193,
+        "p99_ms": 1000.4061,
+        "max_ms": 1000.4061,
+        "mean_ms": 999.9533777777777
+      },
+      "aborted": false
+    },
+    {
+      "backend": "software",
+      "mode": "A",
+      "video_driver": "windows",
+      "render_driver_hint": "(SDL default)",
+      "canvas": "1920x1080",
+      "fps_cap": 60.0,
+      "vsync": false,
+      "frames": 600,
+      "fps": 60.0,
+      "cpu_percent": 12.018127286633193,
+      "work": {
+        "n": 600,
+        "p50_ms": 1.2632,
+        "p99_ms": 1.6135,
+        "max_ms": 2.0154,
+        "mean_ms": 1.2715366666666668
+      },
+      "present": {
+        "n": 600,
+        "p50_ms": 0.7523,
+        "p99_ms": 0.9749,
+        "max_ms": 1.1422,
+        "mean_ms": 0.7655736666666666
+      },
+      "frame_total": {
+        "n": 600,
+        "p50_ms": 2.0217,
+        "p99_ms": 2.6075,
+        "max_ms": 2.8863,
+        "mean_ms": 2.037110333333333
+      },
+      "interval": {
+        "n": 599,
+        "p50_ms": 16.6833,
+        "p99_ms": 17.1072,
+        "max_ms": 17.9521,
+        "mean_ms": 16.66457161936561
+      },
+      "aborted": false
+    },
+    {
+      "backend": "software",
+      "mode": "B",
+      "video_driver": "windows",
+      "render_driver_hint": "(SDL default)",
+      "canvas": "1920x1080",
+      "fps_cap": 60.0,
+      "vsync": false,
+      "frames": 600,
+      "fps": 60.0,
+      "cpu_percent": 9.052104834371264,
+      "work": {
+        "n": 600,
+        "p50_ms": 0.3214,
+        "p99_ms": 0.4047,
+        "max_ms": 0.4452,
+        "mean_ms": 0.3243101666666667
+      },
+      "present": {
+        "n": 600,
+        "p50_ms": 1.2082,
+        "p99_ms": 1.4892,
+        "max_ms": 1.6219,
+        "mean_ms": 1.2292933333333333
+      },
+      "frame_total": {
+        "n": 600,
+        "p50_ms": 1.532,
+        "p99_ms": 1.8611,
+        "max_ms": 1.9584,
+        "mean_ms": 1.5536035
+      },
+      "interval": {
+        "n": 599,
+        "p50_ms": 16.6804,
+        "p99_ms": 17.1496,
+        "max_ms": 17.3444,
+        "mean_ms": 16.666044407345577
+      },
+      "aborted": false
+    },
+    {
+      "backend": "software",
+      "mode": "C",
+      "video_driver": "windows",
+      "render_driver_hint": "(SDL default)",
+      "canvas": "1920x1080",
+      "fps_cap": 60.0,
+      "vsync": false,
+      "frames": 10,
+      "fps": 1.0,
+      "cpu_percent": 0.0,
+      "work": {
+        "n": 10,
+        "p50_ms": 0.506,
+        "p99_ms": 0.6028,
+        "max_ms": 0.6028,
+        "mean_ms": 0.53584
+      },
+      "present": {
+        "n": 10,
+        "p50_ms": 1.4639,
+        "p99_ms": 1.5161,
+        "max_ms": 1.5161,
+        "mean_ms": 1.45837
+      },
+      "frame_total": {
+        "n": 10,
+        "p50_ms": 2.0024,
+        "p99_ms": 2.0809,
+        "max_ms": 2.0809,
+        "mean_ms": 1.99421
+      },
+      "interval": {
+        "n": 9,
+        "p50_ms": 1000.0542,
+        "p99_ms": 1000.2643,
+        "max_ms": 1000.2643,
+        "mean_ms": 1000.0328111111112
+      },
+      "aborted": false
+    }
+  ]
+}

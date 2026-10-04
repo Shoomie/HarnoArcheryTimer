@@ -1,0 +1,38 @@
+# Default settings. Copy to your per-user data dir to override (M6 adds the settings screen).
+
+# Physical inputs on the core machine. Key = "<source>:<id>"
+#   mcu:<n>   button n reported by the microcontroller ($K frames)
+#   gpio:<n>  BCM pin n on a Raspberry Pi (needs python3-gpiozero)
+# Each binding has "press" (an action) and optionally "hold" + "hold_s": with a hold action
+# the binding fires on release (short = press, long = hold); without one it fires on press.
+# Actions: primary, pause, resume, stop_end, next, back, emergency, reset,
+#          clear_emergency, clear_emergency_restart.
+# Emergency must never have a hold: it has to act the instant it is pressed.
+
+[buttons."mcu:1"]
+press = "primary"
+
+[buttons."mcu:2"]
+press = "pause"
+
+[buttons."mcu:3"]
+press = "emergency"
+
+[buttons."mcu:4"]
+press = "next"
+hold = "reset"
+hold_s = 2.0
+
+# This device's role in a multi-device timer network (see docs/cluster.md).
+[node]
+# leader = "192.168.1.10:8765"   # set to run as a follower of that leader; omit to be the leader
+# espnow = "auto"                # ESP32 role: off | bridge | follow | auto
+
+# Sound. Local = speakers on this machine (audio worker in the core); mcu = the horn or buzzer on
+# the microcontroller ($S / $B). Both can be on at once. The Sound screen in the UI changes these
+# and the core remembers them in the user data dir; the values here are only the first-run defaults.
+[audio]
+local = true
+mcu = true
+volume = 0.8
+device = ""          # output device name; "" = system default (HDMI vs 3.5 mm: pick in the UI)

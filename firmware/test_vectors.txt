@@ -1,0 +1,154 @@
+# Serial protocol v1 test vectors, shared by the Python tests and the firmware tests.
+#
+# Format, one vector per line (blank lines and '#' comments are ignored):
+#   <frame> => OK <CMD> [<arg> ...]    decodes; the fields are the command and its arguments
+#   <frame> => ERR <code>              rejected; code is CS, UC, BA, OV or MF
+# An argument that is empty is written as '-'. Frames are given without the trailing newline.
+# For OK vectors, re-encoding the parsed fields must reproduce the frame byte for byte.
+# Checks run in this order: length (OV), framing (MF), checksum (CS), command (UC), args (BA).
+# Generated with an XOR written independently of protocol.py; $L,G*27 was also checked by hand.
+# --- host -> MCU
+$L,G*27 => OK L G
+$L,Y*39 => OK L Y
+$L,R*32 => OK L R
+$L,O*2F => OK L O
+$L,RY*6B => OK L RY
+$L,GYR*2C => OK L GYR
+$S,0*4F => OK S 0
+$S,1*4E => OK S 1
+$S,2*4D => OK S 2
+$S,3*4C => OK S 3
+$S,5*4A => OK S 5
+$S,99*7F => OK S 99
+$S,1,7*55 => OK S 1 7
+$S,0,255*51 => OK S 0 255
+$S,3,1*51 => OK S 3 1
+$B,0*5E => OK B 0
+$B,1*5F => OK B 1
+$G,AB*68 => OK G AB
+$G,CD*6C => OK G CD
+$G,ABCD*6F => OK G ABCD
+$G,A1*1B => OK G A1
+$T,0*48 => OK T 0
+$T,87300*44 => OK T 87300
+$T,4294967295*75 => OK T 4294967295
+$H,0,R,*06 => OK H 0 R -
+$H,1,G,AB*11 => OK H 1 G AB
+$H,4294967295,RY,CD*65 => OK H 4294967295 RY CD
+$V*56 => OK V
+# --- MCU -> host
+$I,1,esp32s3-0.1.0,LSBGT*21 => OK I 1 esp32s3-0.1.0 LSBGT
+$I,1,sim-1,L*73 => OK I 1 sim-1 L
+$I,1,x,*2C => OK I 1 x -
+$A,0*5D => OK A 0
+$A,123*5D => OK A 123
+$K,1,1*4B => OK K 1 1
+$K,1,0*4A => OK K 1 0
+$K,99,1*7A => OK K 99 1
+$I,1,esp-1,LSBK*38 => OK I 1 esp-1 LSBK
+$E,CS*79 => OK E CS
+$E,UC*7F => OK E UC
+$E,BA*6A => OK E BA
+$E,OV*70 => OK E OV
+# --- bad checksum (CS)
+$L,G*26 => ERR CS
+$H,1,G,AB*10 => ERR CS
+$V*57 => ERR CS
+$L,G*00 => ERR CS
+$L,G*28 => ERR CS
+$L,G *27 => ERR CS
+# --- checksum must be uppercase hex (MF)
+$L,G*2f => ERR MF
+# --- unknown command with a valid checksum (UC)
+$X,1*45 => ERR UC
+$Z*5A => ERR UC
+$l,G*07 => ERR UC
+$LL,G*6B => ERR UC
+$L2,G*15 => ERR UC
+# --- bad arguments with a valid checksum (BA)
+$L*4C => ERR BA
+$L,*60 => ERR BA
+$L,X*38 => ERR BA
+$L,GG*60 => ERR BA
+$L,O,R*51 => ERR BA
+$L,OG*68 => ERR BA
+$L,g*07 => ERR BA
+$L,G,Y*52 => ERR BA
+$S*53 => ERR BA
+$S,-1*63 => ERR BA
+$S,100*4E => ERR BA
+$S,01*7E => ERR BA
+$S,a*1E => ERR BA
+$S,1,2*50 => OK S 1 2
+$S,1.5*55 => ERR BA
+$S,+1*65 => ERR BA
+$B,2*5C => ERR BA
+$B,*6E => ERR BA
+$B,01*6F => ERR BA
+$G*47 => ERR BA
+$G,*6B => ERR BA
+$G,ab*68 => ERR BA
+$G,ABCDEFGHI*2A => ERR BA
+$G,A-B*45 => ERR BA
+$T*54 => ERR BA
+$T,4294967296*76 => ERR BA
+$T,-5*60 => ERR BA
+$T,0x10*31 => ERR BA
+$H,1,G*3E => ERR BA
+$H,1,G,AB,X*65 => ERR BA
+$H,01,G,AB*21 => ERR BA
+$H,1,Q,AB*07 => ERR BA
+$H,1,G,a*73 => ERR BA
+$V,1*4B => ERR BA
+$I,256,x,L*60 => ERR BA
+$I,1,x*00 => ERR BA
+$I,1,,L*18 => ERR BA
+$I,1,x,Q*7D => ERR BA
+$I,1,x,LL*2C => ERR BA
+$I,1,bad fw,L*4E => ERR BA
+$A*41 => ERR BA
+$A,x*15 => ERR BA
+$A,1,2*42 => ERR BA
+$E*45 => ERR BA
+$E,XX*69 => ERR BA
+$E,MF*62 => ERR BA
+# --- framing garbage (MF)
+garbage => ERR MF
+$ => ERR MF
+$* => ERR MF
+$L,G => ERR MF
+$L,G* => ERR MF
+$L,G*2 => ERR MF
+$L,G*277 => ERR MF
+L,G*27 => ERR MF
+x$L,G*27 => ERR MF
+$L,G*27x => ERR MF
+$L,$G*00 => ERR MF
+$L,G*27*27 => ERR MF
+# --- overflow (OV): a frame, including its newline, may be at most 64 bytes
+$X,999999999999999999999999999999999999999999999999999999999*4D => ERR UC
+$X,9999999999999999999999999999999999999999999999999999999999*74 => ERR OV
+$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA*00 => ERR OV
+# --- bad arguments for $K (BA)
+$K,0,1*4A => ERR BA
+$K,1,2*48 => ERR BA
+$K,100,1*4B => ERR BA
+$K,1*56 => ERR BA
+# --- ESP-NOW mode ($M, host -> MCU) and status ($N, MCU -> host)
+$M,0*51 => OK M 0
+$M,1*50 => OK M 1
+$M,2*53 => OK M 2
+$M,3*52 => OK M 3
+$N,2,3,E*26 => OK N 2 3 E
+$N,1,0,H*2B => OK N 1 0 H
+$N,3,99,N*1F => OK N 3 99 N
+$I,1,esp-1,LSBKN*76 => OK I 1 esp-1 LSBKN
+$M,4*55 => ERR BA
+$M*4D => ERR BA
+$N,1,0,X*3B => ERR BA
+$N,4,0,H*2E => ERR BA
+$N,1,100,H*2A => ERR BA
+$S,1,0*52 => ERR BA
+$S,1,256*53 => ERR BA
+$S,1,07*65 => ERR BA
+$S,1,2,3*4F => ERR BA

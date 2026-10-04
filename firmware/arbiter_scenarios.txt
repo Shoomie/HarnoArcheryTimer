@@ -1,0 +1,146 @@
+# Arbiter scenarios (docs/mesh.md section 4). Shared by the C++ arbiter (firmware/lib/meshcore) and the
+# Python simulator. Time is in ms from 0; events are applied in file order and an expect sees only the events above it.
+#
+#   scenario <name>
+#   config role=<M|F|E|N> host=<alive|dead> [master_id=<8 hex>]       (host alive/dead from t=0)
+#   at <ms> [every <ms> until <ms>] rx TIMER master=<8 hex> rank=<0-2> lights=<letters|O> [flags=<n>] [session=<n>, default 1]
+#                                    [sound_seq=<n> sound_count=<n> sound_age=<ms>]
+#   at <ms> [every ... until ...] rx SOUND master=<8 hex> seq=<n> count=<n>
+#   at <ms> host alive|dead   at <ms> host lights=<letters|O>   at <ms> reboot (RAM state lost, persisted sessions kept)
+#   at <ms> expect key=value ...      keys: follow=<8 hex|none> lights=<letters in G,Y,R order|O>
+#                                     sound_started=<cumulative patterns started> sound_active=<0|1> conflict=<0|1>
+#                                     failsafe=<0|1> tx_rank=<0|1|2>   (omitted keys are not checked)
+#
+# Definitions used by every implementation:
+#  - live master: last TIMER heard less than 1000 ms ago. failsafe=1 (lights R, silent) iff the node is not
+#    host-driven and has no live followed master, or the host is dead (role M/F), or role N/E and nobody live.
+#  - switch: the followed master has been silent >= 600 ms and another is live, or a live master of higher
+#    rank has been heard for >= 400 ms (first frame to now). Ties: highest rank, then lowest master_id.
+#  - conflict=1 iff at least two distinct master_ids of rank 2 are "active": the second most recent frame of
+#    each is no older than 600 ms. A role-M node with a live host counts as one active rank-2 master.
+#  - A newly followed master's first TIMER only records its sound_seq. A sound starts from a TIMER only if
+#    its sound_seq differs from the recorded one and sound_age < 400. SOUND frames start when seq differs.
+#  - Emergency flag (flags bit1) forces lights R while set. A SOUND/TIMER with count 0 and a new sound_seq stops a
+#    running pattern at once, whatever its sound_age. sound_active=1 while a pattern runs (blast or gap).
+#  - Session rule (mesh.md section 4): per master_id the highest accepted session is persisted (survives reboot);
+#    a TIMER/SOUND with a lower session is dropped completely (it neither drives outputs nor counts as heard).
+
+scenario stickiness_and_conflict
+config role=N host=dead
+at 0 every 200 until 1000 rx TIMER master=00000001 rank=2 lights=G
+at 250 every 200 until 1050 rx TIMER master=00000002 rank=2 lights=R
+at 0 expect follow=00000001 lights=G failsafe=0 conflict=0
+at 250 expect follow=00000001 lights=G conflict=0
+at 450 expect follow=00000001 lights=G conflict=1
+at 1050 expect follow=00000001 lights=G conflict=1
+
+scenario failsafe_and_recover
+config role=N host=dead
+at 0 expect follow=none lights=R failsafe=1
+at 0 every 200 until 1000 rx TIMER master=00000001 rank=2 lights=G
+at 1000 expect lights=G failsafe=0
+at 1999 expect lights=G failsafe=0
+at 2000 expect lights=R failsafe=1
+at 2100 rx TIMER master=00000001 rank=2 lights=G
+at 2100 expect lights=G failsafe=0
+
+scenario switch_on_silence
+config role=N host=dead
+at 0 every 200 until 1000 rx TIMER master=00000001 rank=2 lights=G
+at 1300 every 200 until 4000 rx TIMER master=00000002 rank=2 lights=R
+at 1599 expect follow=00000001 lights=G failsafe=0 conflict=0
+at 1600 expect follow=00000002 lights=R failsafe=0 conflict=0
+
+scenario higher_rank_takes_over
+config role=N host=dead
+at 0 every 200 until 4000 rx TIMER master=00000001 rank=1 lights=G
+at 1000 every 200 until 4000 rx TIMER master=00000002 rank=2 lights=R
+at 1200 expect follow=00000001 lights=G
+at 1400 expect follow=00000002 lights=R conflict=0
+
+scenario role_m_leads_and_flags_conflict
+config role=M host=alive master_id=0000AAAA
+at 0 host lights=R
+at 0 every 200 until 2000 rx TIMER master=00000002 rank=2 lights=G
+at 0 expect follow=none lights=R tx_rank=2 conflict=0 failsafe=0
+at 200 expect conflict=1 lights=R
+at 1500 host dead
+at 1500 expect tx_rank=0 failsafe=1 lights=R
+at 1700 host alive
+at 1700 expect tx_rank=2 failsafe=0
+
+scenario role_f_mirrors
+config role=F host=alive master_id=00000009
+at 0 expect tx_rank=1 failsafe=0
+at 500 host dead
+at 500 expect tx_rank=0 failsafe=1 lights=R
+
+scenario role_e_follows_radio
+config role=E host=alive master_id=00000009
+at 0 expect follow=none failsafe=1 lights=R
+at 0 every 200 until 1000 rx TIMER master=00000001 rank=2 lights=G
+at 400 expect follow=00000001 lights=G tx_rank=0 failsafe=0
+
+scenario emergency_latch
+config role=N host=dead
+at 0 rx TIMER master=00000001 rank=2 lights=G flags=0
+at 0 expect lights=G
+at 200 rx TIMER master=00000001 rank=2 lights=G flags=2
+at 200 expect lights=R
+at 400 rx TIMER master=00000001 rank=2 lights=G flags=2
+at 400 expect lights=R
+at 600 rx TIMER master=00000001 rank=2 lights=G flags=0
+at 600 expect lights=G
+
+scenario sound_dedupe_and_heal
+config role=N host=dead
+at 0 rx TIMER master=00000001 rank=2 lights=R sound_seq=5 sound_count=1 sound_age=100
+at 0 expect sound_started=0
+at 200 rx SOUND master=00000001 seq=6 count=3
+at 200 expect sound_started=1
+at 203 rx SOUND master=00000001 seq=6 count=3
+at 203 expect sound_started=1
+at 400 rx TIMER master=00000001 rank=2 lights=R sound_seq=6 sound_count=3 sound_age=200
+at 400 expect sound_started=1
+at 600 rx TIMER master=00000001 rank=2 lights=R sound_seq=7 sound_count=1 sound_age=100
+at 600 expect sound_started=2
+at 800 rx TIMER master=00000001 rank=2 lights=R sound_seq=8 sound_count=1 sound_age=500
+at 800 expect sound_started=2
+
+scenario replay_of_old_session_rejected
+config role=N host=dead
+at 0 every 200 until 600 rx TIMER master=00000001 rank=2 lights=G session=5
+at 600 expect lights=G follow=00000001
+at 800 rx TIMER master=00000001 rank=2 lights=R session=4
+at 800 expect lights=G follow=00000001
+at 1000 rx TIMER master=00000001 rank=2 lights=R session=6
+at 1000 expect lights=R follow=00000001
+at 1200 rx TIMER master=00000001 rank=2 lights=G session=5
+at 1200 expect lights=R
+
+scenario replay_does_not_keep_a_dead_master_alive
+config role=N host=dead
+at 0 every 200 until 400 rx TIMER master=00000001 rank=2 lights=G session=5
+at 800 every 200 until 3000 rx TIMER master=00000001 rank=2 lights=G session=4
+at 1500 expect failsafe=1 lights=R
+
+scenario session_survives_reboot
+config role=N host=dead
+at 0 every 200 until 400 rx TIMER master=00000001 rank=2 lights=G session=5
+at 500 reboot
+at 600 rx TIMER master=00000001 rank=2 lights=G session=4
+at 600 expect failsafe=1 lights=R follow=none
+at 800 rx TIMER master=00000001 rank=2 lights=G session=5
+at 800 expect failsafe=0 lights=G follow=00000001
+
+scenario sound_stop_propagates
+config role=N host=dead
+at 0 rx TIMER master=00000001 rank=2 lights=R sound_seq=1 sound_count=0
+at 200 rx SOUND master=00000001 seq=2 count=5
+at 200 expect sound_started=1 sound_active=1
+at 400 rx SOUND master=00000001 seq=3 count=0
+at 400 expect sound_active=0 sound_started=1
+at 600 rx TIMER master=00000001 rank=2 lights=R sound_seq=4 sound_count=3 sound_age=100
+at 600 expect sound_active=1 sound_started=2
+at 800 rx TIMER master=00000001 rank=2 lights=R sound_seq=5 sound_count=0 sound_age=300
+at 800 expect sound_active=0 sound_started=2

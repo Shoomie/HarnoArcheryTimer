@@ -1,0 +1,38 @@
+==============================================================================
+archerytimer render benchmark (M0)
+==============================================================================
+  python           3.14.6
+  implementation   CPython
+  os               Windows 11 (10.0.26200)
+  machine          AMD64
+  cpu_count        16
+  pygame           2.5.8
+  pygame_ce        True
+  sdl              2.32.10
+  SDL_VIDEODRIVER  (default)
+  SDL_RENDER_DRIVER (default)
+  resolution       1920x1080 windowed
+  fps cap          60.0
+  vsync            False
+  duration/run     10 s
+
+  running gpu      mode A (full redraw/frame) ...
+  running gpu      mode B (sectioned, 1 animating) ...
+  running gpu      mode C (sectioned idle, 1 Hz) ...
+  running software mode A (full redraw/frame) ...
+  running software mode B (sectioned, 1 animating) ...
+  running software mode C (sectioned idle, 1 Hz) ...
+
+backend   mode  fps   work p50  work p99  pres p50  pres p99  frame max  CPU  verdict       
+--------------------------------------------------------------------------------------------
+gpu       A     59.9  1.25      1.40      4.74      6.08      8.90       35%  OK @60        
+gpu       B     59.9  1.59      2.16      0.59      0.99      3.81       14%  OK @60        
+gpu       C     1.0   2.23      3.00      0.79      0.99      3.99       0%   idle (see CPU)
+software  A     60.0  1.26      1.61      0.75      0.97      2.89       12%  OK @60        
+software  B     60.0  0.32      0.40      1.21      1.49      1.96       9%   OK @60        
+software  C     1.0   0.51      0.60      1.46      1.52      2.08       0%   idle (see CPU)
+
+  times in ms; work = CPU drawing + texture upload, pres = present/flip;
+  CPU = process CPU as % of one core (4 cores on a Pi 2B = 400% max).
+  SDL video driver used: windows
+Results written to docs\results\render_windows.json
