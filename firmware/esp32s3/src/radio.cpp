@@ -630,6 +630,8 @@ bool tryPairAcc(const uint8_t *buf, size_t len, const uint8_t *mac, uint32_t now
     memcpy(meshKey, mk, 16);
     memcpy(remoteKey, rk, 16);
     hasMesh = hasRemote = true;
+    enabled = true;  // a box that booted keyless had the radio off by default: being paired means it is wanted
+    configPutU8("radio", 1);
     configPutU8("remote", 1);
     memset(pairSlots, 0, sizeof pairSlots);
     memset(mk, 0, sizeof mk);

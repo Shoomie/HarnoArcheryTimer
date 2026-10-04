@@ -223,6 +223,9 @@ stand-alone breadboard remote (one button, three LEDs). Release images rebuilt a
 **Remove really unpairs (2026-10-04):** `$P,del` makes the master send REVOKE (mesh frame type 10, `docs/mesh.md`) so a removed remote forgets its keys and pairs
 again; flashing a merged release image also wipes the ESP32's stored keys. Native C++ tests 425 checks pass; not yet tried on two real boards.
 
+**Joiner stays silent after pairing (found 2026-10-04):** a box that booted keyless had `enabled` (radio on) false, so it switched its radio off
+right after PAIR_ACC; now `tryPairAcc` sets it (and stores `radio=1`). Replugging a paired box also fixed it before (key present at boot).
+
 **Not verified:** any firmware (never compiled or flashed: buttons, ESP-NOW, `$S` ids, reworked `main.cpp`);
 real MCU/light/horn hardware; the cluster on a real LAN; ESP-NOW range/latency; anything on the Pi (the M8 install script and systemd units, KMSDRM under `PAMName=login`,
 GPU path, audio output, GPIO, performance, benchmarks); multi-monitor placement; touchscreen; gamepad; local
