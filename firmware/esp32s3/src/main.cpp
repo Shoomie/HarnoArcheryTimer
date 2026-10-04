@@ -33,8 +33,11 @@ static const char *CAPS = "LSBKNWR";  // lights, MCU-timed whistle, buzzer, butt
 static const uint32_t WATCHDOG_MS = 1000;
 static const uint32_t EMERGENCY_HOLD_MS = 1000;  // a remote's own emergency press keeps its outputs safe this long
 
-static bool lightsOn = true, soundOn = true, remoteOn = false;
-static uint8_t btnAction[4] = {0, 0, 0, 0};
+static bool lightsOn = true, soundOn = true, remoteOn = true;
+// Out of the box every button sends something and the master decides what is allowed (its rights page per remote):
+// 1 start/next, 2 pause, 3 stop end, 4 emergency. `$C btn1..4` still overrides them over USB.
+static const uint8_t BTN_DEFAULT[4] = {1, 2, 4, 7};
+static uint8_t btnAction[4] = {1, 2, 4, 7};
 static bool legacyHost = true;  // no `$R` seen yet: report status as `$N`
 static uint8_t legacyMode = ESPNOW_DEFAULT_MODE;
 static uint32_t lastStatusMs = 0;
@@ -178,7 +181,7 @@ static bool onPairAck(const uint8_t mac[6], uint32_t counter, uint8_t result) { 
 // Host alive: every debounced edge goes to the host as `$K` (it decides press / hold / release). No host: a press sends
 // the configured action (`$C btn1..4`) as a CMD frame with this node's remote key. While pairing a press only arms it.
 static void onButtonEdge(uint8_t id, bool down) {
-  if (radioPairing()) {
+  if (radioPairing() && !hostAliveNow()) {  // a keyless box with a host still forwards its buttons
     if (down) radioPairPress();
     return;
   }
@@ -210,7 +213,7 @@ static void bootPairing() {
       delay(10);
     }
     outputsSetOverrideLights(false, 0);
-  } else if (!radioHasMeshKey() && remoteOn) {
+  } else if (!radioHasMeshKey()) {  // no key: look for a master automatically (shows up in its Remotes list)
     radioEnterPairing(false);
   }
 }
@@ -241,11 +244,11 @@ void setup() {
   configBegin();
   lightsOn = configGetU8("lights", 1) != 0;
   soundOn = configGetU8("sound", 1) != 0;
-  remoteOn = configGetU8("remote", 0) != 0;
+  remoteOn = configGetU8("remote", 1) != 0;
   for (int i = 0; i < 4; i++) {
     char key[5];
     snprintf(key, sizeof key, "btn%d", i + 1);
-    btnAction[i] = configGetU8(key, 0);
+    btnAction[i] = configGetU8(key, BTN_DEFAULT[i]);
     if (btnAction[i] > 7) btnAction[i] = 0;
   }
   buttonsBegin(onButtonEdge);
@@ -293,7 +296,7 @@ void loop() {
 
   statusTick(now, o);
   // Pairing: all three lights blink so the operator sees the box waiting; otherwise the normal outputs.
-  outputsSetOverrideLights(radioPairing(), ((now / 250) % 2) ? 7 : 0);
+  outputsSetOverrideLights(radioPairBlink(), ((now / 250) % 2) ? 7 : 0);
   outputsApply();
   // Fault LED: slow blink = no source (fail-safe).
   outputsFault(o.failsafe && ((now / 250) % 2));

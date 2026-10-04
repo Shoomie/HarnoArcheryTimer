@@ -75,6 +75,7 @@ On Windows use `scripts\start_windows.bat` instead of `scripts/start.sh`.
 | [docs/ui.md](docs/ui.md) · [docs/audio.md](docs/audio.md) | Screen, keys, sound |
 | [docs/cluster.md](docs/cluster.md) · [docs/espnow.md](docs/espnow.md) | Several devices, wireless sync |
 | [docs/protocol.md](docs/protocol.md) · [firmware/](firmware/) | USB serial protocol and ESP32 firmware |
+| [docs/flashing.md](docs/flashing.md) | Flash the ESP32 modules: `scripts/flash.bat` (Windows) or `scripts/flash.sh` |
 | [structure.md](structure.md) | Where everything is in the source tree |
 
 ## Repository layout

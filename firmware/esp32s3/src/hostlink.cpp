@@ -233,14 +233,29 @@ void hostlinkBegin(const HostHandlers &handlers, const char *version, const char
   HH = handlers;
   fwVersion = version;
   caps = capabilities;
-  Serial.begin(115200);
 #if defined(ARDUINO_USB_CDC_ON_BOOT) && ARDUINO_USB_CDC_ON_BOOT
+  Serial.begin(115200);
   Serial.setTxTimeoutMs(0);  // a stand-alone box with no USB host must never block on print
+#else
+  // UART0 behind a USB-UART bridge (classic ESP32 DevKit). The UART drains into the pins whether or not a host is
+  // listening, so a print never blocks for good; a larger TX buffer keeps a burst (the `$Q` config dump, ~300 bytes)
+  // from stalling loop() for a few ms. Sizes must be set before begin().
+  Serial.setRxBufferSize(1024);
+  Serial.setTxBufferSize(1024);
+  Serial.begin(115200);
 #endif
 }
 
 void hostlinkPoll() {
   while (Serial.available()) {
-    if (reader.feed((char)Serial.read())) processLine();
+    const char ch = (char)Serial.read();
+#if !(defined(ARDUINO_USB_CDC_ON_BOOT) && ARDUINO_USB_CDC_ON_BOOT)
+    // UART0: the ROM bootloader prints text (sometimes without a final newline) before our first frame. A frame never
+    // contains '$' inside, so a '$' after non-frame bytes marks a fresh start: drop the partial garbage line.
+    if (ch == '$' && reader.size() > 0 && reader.data()[0] != '$') {
+      reader.feed('\n');  // closes the garbage line; the next feed starts a new one
+    }
+#endif
+    if (reader.feed(ch)) processLine();
   }
 }

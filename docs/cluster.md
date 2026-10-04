@@ -3,6 +3,17 @@
 Goal: several devices (Pi or PC, each with its own screen, lights, sound and buttons) run as one
 timer. Every device can run commands and every device can have light/sound hardware.
 
+## Discovering new radio devices (2026-10-04)
+
+Menu > Remotes starts a search (`pair_open` with `discover`): the core keeps the MCU's pairing window open
+and renews it (not while a request waits for the operator, at most 10 minutes after the last press of
+"Search"). A keyless ESP32 in range shows up within a second or two as `name (MAC)`; tapping the row opens
+its rights (same toggles as a paired remote), Accept sends `$P,accept`. Devices that stop asking for 25 s
+leave the list; a rejected device stays hidden until the next search. **Limit:** a core always keeps its own
+mesh key, so the ESP32 of a follower core that is not yet approved is on a foreign key and cannot be heard by
+the master; approve the follower core under Menu > Followers (that hands over the mesh key and the ESP32
+then appears in the timer network).
+
 ## Model: one leader, any number of followers
 
 ```text

@@ -327,6 +327,7 @@ class MeshFollower:
                 self._serial_link(),
                 espnow={"mode": "follow", "peers": st.peers, "src": st.src} if st else None,
                 upstream="up" if up else "down",
+                via="radio",
             )
         )
 

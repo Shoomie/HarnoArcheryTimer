@@ -194,11 +194,26 @@ UI has no 'radio only' choice yet. Open decisions and next steps: `docs/decision
 `esp-0.4.0` now links meshcore + hostcore and **compiles** for S3 and C3 (never flashed); native C++ tests 420 + 2179
 checks, Python suite 675+ passed; 'Radio only' button exists. Pairing uses a real X25519 (RFC 7748 tested). Next:
 hardware bring-up (two boards), see 0004. Native tests: `cd firmware/test/native && cmd /c .\run_tests.bat`.
+**Flashing (2026-10-04):** `scripts/flash.bat|sh` is an OS-independent menu (stdlib only, `.flash-env/` with esptool,
+prebuilt images in `firmware/release/`, PlatformIO only on demand; nothing added to the install scripts, see
+`docs/flashing.md`). Six firmware variants incl. the classic ESP32-WROOM-32D (`docs/firmware.md`), compile-only.
 **Follower access (2026-10-04, `docs/cluster.md`):** a new LAN follower is *pending* (watch only) until the operator approves
 it on the leader (Menu > Followers); approval creates a per-follower key and hands over the radio mesh key; rights are a
 preset (view/operator/full) plus per-action toggles; emergency always passes; the leader's own machine is the operator;
 remote UIs without approval are watch-only. Follower cores log and publish `leader_rtt_ms`/`leader_offset_ms` (sync
 diagnostic). Built and tested with in-process transports (725 tests); not tried on a real LAN yet.
+
+**Radio discovery (2026-10-04, `docs/cluster.md`):** pairing needs no button press any more; a keyless ESP32 asks to join by
+itself and the Remotes screen lists it live (name + MAC) with a rights page before Accept; the core renews the pairing window
+during a search. Python 775 tests, ruff, mypy pass; the firmware change (`radio.cpp`, `main.cpp`) is uncompiled and untested.
+A follower core's ESP32 is on its own mesh key until the follower is approved, so the master cannot see it before then.
+**First hardware test (2026-10-04, C3 Super Mini master on USB + WROOM-32D standalone):** the keyless WROOM asked to join and
+the C3 reported `$P,req` with name and MAC, no button. Found on the way: the C3 Super Mini at full TX power was not heard by the
+WROOM (one-way link); `-DRADIO_TX_POWER_QDBM=34` (8.5 dBm) in `firmware/esp32c3/platformio.ini` fixes it. `-DRADIO_DEBUG` prints rx/pairing
+lines on the serial port (off by default). Still untested on hardware: the full UI flow (accept, rights), S3 boards, a 3rd device.
+
+**Remote buttons (decided 2026-10-04):** rigid pinout and fixed button actions (1 start/next, 2 pause, 3 stop end, 4 emergency; GPIO 13/14/16/17); the
+master only decides rights per remote. Master-assigned button mapping (remote sends the button id) was considered and not chosen.
 
 **Not verified:** any firmware (never compiled or flashed: buttons, ESP-NOW, `$S` ids, reworked `main.cpp`);
 real MCU/light/horn hardware; the cluster on a real LAN; ESP-NOW range/latency; anything on the Pi (the M8 install script and systemd units, KMSDRM under `PAMName=login`,

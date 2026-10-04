@@ -73,6 +73,9 @@ Dependency direction: `common` <- `core` <- (`hardware`, `audio`, `ipc`) <- `cor
 | Path | What |
 | --- | --- |
 | `firmware/esp32s3/`, `esp32c3/` | PlatformIO v1 firmware split into `config/outputs/hostlink/buttons/radio` + `main.cpp` (the C3 shares the S3 sources). Builds; never flashed |
+| `firmware/esp32/` | Classic ESP32-WROOM-32D project (envs `esp32-wroom-32d`, `-standalone`; UART bridge, no native USB); shares the S3 sources. Variants and pin maps: `docs/firmware.md` |
+| `scripts/flash.py`, `flash.bat`, `flash.sh`, `scripts/flash_tool/` | ESP32 flashing menu (stdlib only; own `.flash-env/` with esptool; PlatformIO only on demand). Guide and dependency evaluation: `docs/flashing.md` |
+| `firmware/release/` | Generated merged images (`<env>.bin`) and `manifest.json` for all six variants; rebuild and keep when the firmware changes (menu entry 'Create release images') |
 | `firmware/lib/meshcore/`, `firmware/test/native/` | Portable C++ mesh v2 core (codec, HMAC, dedupe, arbiter, CMD gate, pairing HMAC) and its native tests (MSVC run, 352 checks); not yet linked into the firmware |
 | `firmware/*_vectors*.txt`, `arbiter_scenarios.txt` | Serial v1/v2 and radio vectors, arbiter scenarios shared by C++ and Python |
 | `tools/mesh_sim/`, `tests/mesh_sim/` | Mesh simulator (lossy radio, reboots, two masters, remotes) and Python arbiter |

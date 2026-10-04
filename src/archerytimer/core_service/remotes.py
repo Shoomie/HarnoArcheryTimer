@@ -36,6 +36,12 @@ MAX_PAIR_SECONDS = 300
 RATE_LIMIT_COUNT = 5  # non-emergency commands per remote ...
 RATE_LIMIT_WINDOW_NS = 1 * NS_PER_S  # ... per second
 MAX_PENDING = 8
+DISCOVER_SECONDS = (
+    120  # one firmware window while the operator looks for new devices (max of $P,open)
+)
+DISCOVER_RENEW_LEFT_S = 20  # renew the window when this little is left and nobody is waiting
+DISCOVER_MAX_S = 600  # discovery stops by itself this long after the last "search" press
+PENDING_STALE_S = 25  # a waiting device that stopped asking (powered off) leaves the list
 LAST_SEEN_SAVE_S = 60.0  # last_seen alone is written to disk at most this often
 RESULT_DONE, RESULT_DENIED = 0, 1
 
@@ -67,6 +73,7 @@ class Pending:
     mac: str
     name: str
     caps: str
+    seen_ns: int = 0  # clock time of its latest request (the MCU repeats it every ~10 s)
 
 
 class RemoteStore:
@@ -129,6 +136,10 @@ class RemoteRegistry:
         self._remotes = self._store.load()
         self._pending: dict[str, Pending] = {}
         self._open_until_ns: Optional[int] = None
+        self._ignored: set[str] = set()  # rejected during this search: not listed again
+        self._discover_until_ns: Optional[int] = (
+            None  # keep the window open (and renew it) until then
+        )
         self._recent: dict[str, deque[int]] = {}  # mac -> times of recent commands
         self._last_counter: dict[str, tuple[int, int]] = {}  # mac -> (counter, result)
         self._saved_seen_at = 0.0
@@ -158,13 +169,33 @@ class RemoteRegistry:
         left = self._open_until_ns - self._clock.now_ns()
         return -(-left // NS_PER_S)  # round up: "1" until it really ends
 
-    def open_pairing(self, seconds: int = DEFAULT_PAIR_SECONDS) -> None:
+    @property
+    def discovering(self) -> bool:
+        return self._discover_until_ns is not None
+
+    @property
+    def needs_tick(self) -> bool:
+        return self.window_active or self.discovering
+
+    def open_pairing(
+        self, seconds: int = DEFAULT_PAIR_SECONDS, *, discover: bool = False, renew: bool = False
+    ) -> None:
+        """Open the MCU's pairing window. ``discover`` keeps it open (renewed by ``tick``) so
+        devices that power on later still show up, for at most ``DISCOVER_MAX_S``."""
         seconds = max(1, min(int(seconds), MAX_PAIR_SECONDS))
+        if not renew:
+            self._ignored.clear()
+        if discover:
+            self._discover_until_ns = self._clock.now_ns() + DISCOVER_MAX_S * NS_PER_S
+        self._pending.clear()  # a new window has a new key pair: old requests cannot be answered
         self._open_until_ns = self._clock.now_ns() + seconds * NS_PER_S
+        log.info("pairing window requested for %d s (discover=%s)", seconds, discover)
         self._send(mt.PairOpen(seconds))
         self._on_change()
 
     def close_pairing(self) -> None:
+        self._discover_until_ns = None
+        self._ignored.clear()
         was_open = self._open_until_ns is not None
         self._open_until_ns = None
         self._pending.clear()  # requests are only answered while the window is open
@@ -173,12 +204,40 @@ class RemoteRegistry:
             self._on_change()
 
     def tick(self) -> None:
-        """Close an expired window (call about once a second while ``pairing_open``)."""
+        """Once a second while ``needs_tick``: drop waiting devices that went quiet, renew the
+        discovery window, or close an expired one."""
+        now = self._clock.now_ns()
+        if self._discover_until_ns is not None:
+            if now >= self._discover_until_ns:
+                self.close_pairing()
+                return
+            stale = [
+                m for m, p in self._pending.items() if now - p.seen_ns > PENDING_STALE_S * NS_PER_S
+            ]
+            for mac in stale:
+                del self._pending[mac]
+            if stale:
+                self._on_change()
+            if not self.pairing_open and self._pending:
+                self._pending.clear()  # the window ended under them: they must ask again
+                self._on_change()
+            if not self._pending and (
+                not self.pairing_open or self.seconds_left <= DISCOVER_RENEW_LEFT_S
+            ):
+                until = self._discover_until_ns
+                self.open_pairing(DISCOVER_SECONDS, renew=True)
+                self._discover_until_ns = until  # renewing never extends the search
+            return
         if self._open_until_ns is not None and not self.pairing_open:
             self.close_pairing()
 
     def on_pair_state(self, state: mt.PairState) -> None:
         """The MCU's own view of its pairing window (it has its own timeout)."""
+        log.info(
+            "MCU pairing window %s (%d s left)",
+            "open" if state.open else "closed",
+            state.seconds_left,
+        )
         if not state.open and self._open_until_ns is not None:
             self._open_until_ns = None
             self._pending.clear()
@@ -192,10 +251,18 @@ class RemoteRegistry:
         if not self.pairing_open:
             self._send(mt.PairReject(req.mac))
             return
+        if req.mac in self._ignored:
+            return
         if req.mac not in self._pending and len(self._pending) >= MAX_PENDING:
             return
-        self._pending[req.mac] = Pending(req.mac, req.name[:40] or req.mac, req.caps)
-        self._on_change()
+        known = req.mac in self._pending
+        if not known:
+            log.info("radio device %s (%s) asks to join", req.mac, req.name)
+        self._pending[req.mac] = Pending(
+            req.mac, req.name[:40] or req.mac, req.caps, self._clock.now_ns()
+        )
+        if not known:
+            self._on_change()
 
     def accept(self, mac: str, perms: list[str]) -> bool:
         pend = self._pending.pop(mac, None)
@@ -211,6 +278,7 @@ class RemoteRegistry:
     def reject(self, mac: str) -> bool:
         if self._pending.pop(mac, None) is None:
             return False
+        self._ignored.add(mac)
         self._send(mt.PairReject(mac))
         self._on_change()
         return True
@@ -315,8 +383,15 @@ class RemoteRegistry:
             }
             for r in sorted(self._remotes.values(), key=lambda x: (x.name, x.mac))
         ]
+        now_ns = self._clock.now_ns()
         pending = [
-            {"id": p.mac, "name": p.name, "caps": p.caps}
+            {
+                "id": p.mac,
+                "name": p.name,
+                "mac": p.mac,
+                "caps": p.caps,
+                "seen_s": max(0, (now_ns - p.seen_ns) // NS_PER_S),
+            }
             for p in sorted(self._pending.values(), key=lambda x: x.mac)
         ]
         return remotes_msg(remotes, self.pairing_open, self.seconds_left, pending)
@@ -330,7 +405,7 @@ class RemoteRegistry:
                 seconds = int(args.get("seconds", DEFAULT_PAIR_SECONDS))
             except (TypeError, ValueError):
                 seconds = DEFAULT_PAIR_SECONDS
-            self.open_pairing(seconds)
+            self.open_pairing(seconds, discover=bool(args.get("discover")))
         elif name == "pair_close":
             self.close_pairing()
         elif name == "pair_accept":

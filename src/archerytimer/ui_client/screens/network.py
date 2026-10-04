@@ -41,7 +41,9 @@ class NetworkScreen(Screen):
     def widgets(self, ctx: ViewContext) -> list[Widget]:
         t = ctx.t
         n = self._state()
-        online = ctx.core_state == CORE_OK and bool(n)
+        online = ctx.local_ok and bool(
+            n
+        )  # node settings belong to this device, not to the timer feed
         role = str(n.get("role", "standalone"))
         locked = bool(n.get("locked"))
         can_edit = online and not locked

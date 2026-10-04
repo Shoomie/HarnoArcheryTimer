@@ -112,7 +112,7 @@ def test_full_flow_approve_then_auth_on_new_connection():
     nonce = c2.last("challenge")["nonce"]  # type: ignore[index]
     reg.gate(c2, auth_msg("f1", access.auth_mac(key, nonce)))
     ok = c2.last("access")
-    assert ok["status"] == "approved" and "key" not in ok and "mesh_key" not in ok
+    assert ok["status"] == "approved" and "key" not in ok and ok["mesh_key"] == MESH
     assert reg.gate(c2, cmd_msg("primary")) is True
     assert reg.gate(c2, cmd_msg("reset")) is False  # not in the operator preset
 
@@ -124,8 +124,18 @@ def test_key_sent_once():
     reg.set_perms("f1", ["primary"])
     c2 = FakeConn()
     authenticate(reg, c2, "f1", key)
-    with_key = [m for m in c.sent + c2.sent if "key" in m or "mesh_key" in m]
-    assert len(with_key) == 1 and with_key[0]["key"] == key
+    with_key = [m for m in c.sent + c2.sent if m.get("key")]
+    assert len(with_key) == 1 and with_key[0]["key"] == key  # the access key goes once
+    assert c2.last("access")["mesh_key"] == MESH  # the radio key on every authenticated connect
+
+
+def test_radio_key_reset_reaches_connected_followers():
+    reg = make()
+    c = FakeConn()
+    approve(reg, c)
+    reg.set_mesh_key("AB" * 16)
+    last = c.last("access")
+    assert last["mesh_key"] == "AB" * 16 and "key" not in last
 
 
 def test_wrong_mac_denied_and_challenge_single_use():

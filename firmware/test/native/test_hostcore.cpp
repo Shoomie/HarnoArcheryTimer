@@ -241,6 +241,24 @@ static void checkHelpers() {
     done = r.feed('\n');
     CHECK(done && r.size() == 0, "empty line");
   }
+  // UART boot noise (classic ESP32 behind a USB-UART bridge): a garbage line is rejected without side effects, the hello
+  // after it parses, and a banner with no final newline is dropped by the same '$' restart rule hostlink.cpp applies.
+  {
+    LineReader r;
+    Command c;
+    bool done = false;
+    for (char ch : std::string("ets Jun  8 2016 00:22:57\n")) done = r.feed(ch);
+    CHECK(done && parse(r.data(), r.size(), c) != Err::None, "boot garbage line is rejected");
+    for (char ch : std::string("$V*56")) r.feed(ch);
+    done = r.feed('\n');
+    CHECK(done && parse(r.data(), r.size(), c) == Err::None && c.cmd == 'V', "hello after a garbage line parses");
+    for (char ch : std::string("rst:0x1 (POWERON),boot:0x13 $V*56")) {
+      if (ch == '$' && r.size() > 0 && r.data()[0] != '$') r.feed('\n');
+      r.feed(ch);
+    }
+    done = r.feed('\n');
+    CHECK(done && parse(r.data(), r.size(), c) == Err::None && c.cmd == 'V', "hello after a banner without newline");
+  }
   // Number and hex helpers.
   uint32_t v = 0;
   CHECK(parseUint("4294967295", 0xFFFFFFFFu, v) && v == 0xFFFFFFFFu, "u32 max");

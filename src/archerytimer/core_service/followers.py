@@ -148,7 +148,14 @@ class FollowerRegistry:
         self._leader = name
 
     def set_mesh_key(self, mesh_key_hex: str) -> None:
-        self._mesh_key = mesh_key_hex
+        """A new radio key (network reset): connected approved followers get it at once, so a
+        follower that later runs on radio only does not hold an outdated key."""
+        with self._lock:
+            self._mesh_key = mesh_key_hex
+            for fid, conn in list(self._conns.items()):
+                f = self._followers.get(fid)
+                if f is not None and f.status == "approved" and conn.ctx.get("authed"):
+                    conn.send(self._access("approved", f, with_mesh=True))
 
     def get(self, fid: str) -> Optional[Follower]:
         with self._lock:
@@ -242,7 +249,9 @@ class FollowerRegistry:
                 conn.ctx["authed"] = True
                 self._conns[fid] = conn
                 self._followers[fid] = replace(f, last_seen=self._wall())
-                conn.send(self._access("approved", f))
+                conn.send(
+                    self._access("approved", f, with_mesh=True)
+                )  # always the current radio key
                 log.info("follower %s authenticated", f.name)
             else:
                 conn.ctx["authed"] = False
@@ -407,12 +416,14 @@ class FollowerRegistry:
     def _save(self) -> None:
         self._store.save(self._followers)
 
-    def _access(self, status: str, f: Follower, *, with_keys: bool = False) -> Message:
+    def _access(
+        self, status: str, f: Follower, *, with_keys: bool = False, with_mesh: bool = False
+    ) -> Message:
         return access_msg(
             status,
             list(f.perms),
             access.preset_of(list(f.perms)),
             self._leader,
             f.key if with_keys else "",
-            self._mesh_key if with_keys else "",
+            self._mesh_key if (with_keys or with_mesh) else "",
         )

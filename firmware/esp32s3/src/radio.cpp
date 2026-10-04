@@ -27,6 +27,11 @@
 
 using namespace mesh;
 
+#ifdef RADIO_DEBUG
+#define DBG(...) Serial.printf(__VA_ARGS__)
+#else
+#define DBG(...) ((void)0)
+#endif
 namespace {
 
 const uint8_t BCAST[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
@@ -465,10 +470,11 @@ void pairWindowTx(uint32_t now) {
 
 // --- remote side: PAIR_REQ, CMD ----------------------------------------------------------------------------------
 void pairReqTx(uint32_t now) {
-  if (!pairMode || !pairPressed || !openSeen.valid) return;
+  if (!pairMode || !openSeen.valid) return;  // no button needed: the operator's accept is the control
   if (now - openSeen.heardMs > PAIR_OPEN_HEARD_MS) return;
   if ((int32_t)(now - nextReqMs) < 0) return;
   nextReqMs = now + PAIR_REQ_PERIOD_MS;
+  DBG("DBG sending PAIR_REQ\n");
   // A fresh key pair for every request; the last four are kept because the operator's accept takes seconds.
   uint8_t priv[32], pub[32], shared[32];
   meshRandom(priv, 32);
@@ -629,6 +635,7 @@ bool captureOpen(const uint8_t *buf, size_t len, const uint8_t *mac, uint32_t no
 void handleRx(const RxItem &it, uint32_t now) {
   const uint8_t *mac = it.mac;
   if (memcmp(mac, ownMac, 6) == 0) return;
+  DBG("DBG rx type=%u len=%u pairMode=%d from %02X%02X\n", it.data[2], it.len, (int)pairMode, mac[4], mac[5]);
   if (pairMode) {
     if (captureOpen(it.data, it.len, mac, now)) return;
     if (tryPairAcc(it.data, it.len, mac, now)) return;
@@ -706,6 +713,9 @@ void radioStart() {
   WiFi.mode(WIFI_STA);
   WiFi.disconnect();
   esp_wifi_set_ps(WIFI_PS_NONE);  // modem sleep adds milliseconds of receive latency
+#ifdef RADIO_TX_POWER_QDBM
+  WiFi.setTxPower((wifi_power_t)RADIO_TX_POWER_QDBM);  // quarter dBm; Super Mini boards need less than full power
+#endif
   esp_wifi_set_channel(chan, WIFI_SECOND_CHAN_NONE);
   if (esp_now_init() != ESP_OK) return;
   esp_now_register_recv_cb(onRecv);
@@ -917,6 +927,7 @@ bool radioSetMeshKey(const uint8_t key[16]) {
   keysStoreMesh(key);
   memcpy(meshKey, key, 16);
   hasMesh = true;
+  pairMode = pairForced = pairPressed = false;  // a key from the host ends the keyless search
   // New mesh key = new radio network: forget everything learned under the old one.
   peers = PeerTable();
   memset(shadow, 0, sizeof shadow);
@@ -1046,6 +1057,7 @@ void radioEnterPairing(bool force) {
 }
 
 bool radioPairing() { return pairMode; }
+bool radioPairBlink() { return pairMode && pairForced; }  // only the deliberate boot hold blinks; a keyless box just waits quietly
 void radioPairPress() {
   if (pairMode) pairPressed = true;
 }

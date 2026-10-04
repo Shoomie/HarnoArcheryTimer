@@ -61,4 +61,5 @@ bool radioHasRemoteKey();
 bool radioRemoteSend(uint8_t action);                   // button / $P,tx: false when this node cannot send CMD
 void radioEnterPairing(bool force);                     // boot hold of buttons 1+2, or no key: PAIR_REQ mode
 bool radioPairing();
+bool radioPairBlink();                                  // pairing was requested by the boot hold: blink the lights
 void radioPairPress();                                  // a physical press: arms PAIR_REQ

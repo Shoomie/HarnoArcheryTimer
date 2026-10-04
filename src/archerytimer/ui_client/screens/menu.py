@@ -183,7 +183,8 @@ class HardwareScreen(Screen):
                 )
             )
         if not link.upstream_ok:
-            rows.append(("warn", t("hardware.leader_lost")))
+            lost = "hardware.radio_lost" if link.upstream_via == "radio" else "hardware.leader_lost"
+            rows.append(("warn", t(lost)))
         if ctx.synced and abs(ctx.offset_ns) > 5_000_000:
             rows.append(("row", t("hardware.sync", ms=max(1, ctx.rtt_ns // 2_000_000))))
         rtt = getattr(link, "leader_rtt_ms", None)

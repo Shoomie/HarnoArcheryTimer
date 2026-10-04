@@ -106,23 +106,33 @@ def test_status_chip_from_roster(rig):  # noqa: F811
 
 def test_remotes_pairing_flow_reject_is_default(rig):  # noqa: F811
     app, link, _ = rig
-    set_remotes(link, pending=[{"id": "r1", "name": "Finish line", "caps": ""}])
-    open_screen(app, "remotes")
-    assert 'Remote "Finish line" wants to join' in texts(app)
-    click(app, "pair")
-    assert cmds(link)[-1][0] == "pair_open" and cmds(link)[-1][1]["seconds"] > 0
-    set_remotes(
-        link,
-        pairing_open=True,
-        seconds_left=42,
-        pending=[{"id": "r1", "name": "Finish line", "caps": ""}],
-    )
-    assert any("42" in x for x in texts(app))
+    pend = {
+        "id": "AA:BB:CC:00:11:22",
+        "name": "Finish line",
+        "mac": "AA:BB:CC:00:11:22",
+        "caps": "",
+    }
+    pend["id"] = "r1"
+    set_remotes(link, pending=[pend])
+    open_screen(app, "remotes")  # opening the screen starts the search by itself
+    name, args = cmds(link)[-1]
+    assert name == "pair_open" and args["seconds"] > 0 and args["discover"] is True
+    assert "Finish line (AA:BB:CC:00:11:22)" in texts(app)
+    set_remotes(link, pairing_open=True, seconds_left=42, pending=[pend])
+    assert any("Searching" in x for x in texts(app))
+    click(app, "open0")  # rights are chosen before accepting
+    assert app.screens[-1].name == "pending_remote"
+    assert any("AA:BB:CC:00:11:22" in x for x in texts(app))
+    click(app, "perm_next")
+    click(app, "accept")
+    name, args = cmds(link)[-1]
+    assert name == "pair_accept" and args["id"] == "r1" and "next" in args["perms"]
+    assert app.screens[-1].name == "remotes"
     key(app, pygame.K_SPACE)  # primary rejects
     assert cmds(link)[-1] == ("pair_reject", {"id": "r1"})
     click(app, "accept0")
     name, args = cmds(link)[-1]
-    assert name == "pair_accept" and args["id"] == "r1"
+    assert name == "pair_accept" and args["id"] == "r1" and "next" not in args["perms"]
     assert "emergency" not in args["perms"] and "reset" not in args["perms"]
     click(app, "pair")
     assert cmds(link)[-1][0] == "pair_close"
@@ -175,9 +185,10 @@ def test_reset_radio_network_needs_confirmation(rig):  # noqa: F811
     set_remotes(link)
     open_screen(app, "remotes")
     click(app, "reset_radio")
-    assert app.screens[-1].name == "confirm" and not cmds(link)
+    assert app.screens[-1].name == "confirm"
+    assert not any(c[0] == "radio_reset_key" for c in cmds(link))
     click(app, "yes")
-    assert cmds(link) == [("radio_reset_key", {})]
+    assert cmds(link)[-1] == ("radio_reset_key", {})
 
 
 def test_emergency_closes_mesh_screens(rig):  # noqa: F811

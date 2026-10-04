@@ -47,6 +47,8 @@ class ViewContext:
         None  # last `follower` message (this core's access), if any
     )
     leader_rtt_ms: Optional[float] = None  # follower core: round trip to the main timer
+    local_ok: bool = True  # this UI is connected to its own core (menu and network settings work)
+    upstream_via: str = ""  # "radio": the timer comes over radio only (explains a lost feed)
 
 
 @dataclass(frozen=True)
@@ -118,7 +120,8 @@ def next_text_change_ns(rem_ns: int, tenths: bool) -> int:
 def light_view(ctx: ViewContext) -> LightView:
     t, snap = ctx.t, ctx.snap
     if ctx.core_state == CORE_LOST:
-        return LightView(t("light.lost"), Light.RED, "square")
+        key = "light.lost_radio" if ctx.upstream_via == "radio" else "light.lost"
+        return LightView(t(key), Light.RED, "square")
     if snap is None or ctx.core_state == CORE_CONNECTING:
         return LightView(t("light.connecting"), Light.OFF, "none")
     group = snap.group
@@ -270,7 +273,8 @@ def _buttons(ctx: ViewContext) -> list[ButtonView]:
         back = ButtonView(
             "back", "back" if can_back else "", t("button.back"), can_back, "normal", 1.5
         )
-    menu = ButtonView("menu", "menu", t("button.menu"), online, "normal", 1.0)
+    # Menu stays usable when only the timer feed is lost (network mode is changed back there).
+    menu = ButtonView("menu", "menu", t("button.menu"), online or ctx.local_ok, "normal", 1.0)
     return [emergency, primary_button(ctx), pause, stop, back, menu]
 
 

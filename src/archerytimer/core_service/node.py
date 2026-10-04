@@ -330,7 +330,7 @@ class NodeControl:
 
     def tick(self) -> None:
         """About once a second: closes an expired pairing window and refreshes the countdown."""
-        if self._remotes is not None and self._remotes.window_active:
+        if self._remotes is not None and self._remotes.needs_tick:
             self._remotes.tick()
             self.publish_remotes()
 

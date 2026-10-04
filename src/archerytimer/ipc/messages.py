@@ -84,10 +84,12 @@ def link_msg(
     chip: str = "",
     espnow: Optional[Mapping[str, Any]] = None,
     upstream: str = "up",
+    via: str = "",
 ) -> Message:
     """``status`` is this node's lights hardware link. ``upstream`` is ``down`` on a follower
-    core that has lost its leader (UIs then treat the timer as lost). ``espnow`` is the
-    MCU's ESP-NOW status (``mode``, ``peers``, ``src``) when known."""
+    core that has lost its leader (UIs then treat the timer as lost); ``via`` says how the
+    timer arrives (``radio`` for a radio-only follower) so the UI can explain a lost feed.
+    ``espnow`` is the MCU's ESP-NOW status (``mode``, ``peers``, ``src``) when known."""
     msg: Message = {
         "type": "link",
         "v": IPC_VERSION,
@@ -98,6 +100,8 @@ def link_msg(
     }
     if espnow is not None:
         msg["espnow"] = dict(espnow)
+    if via:
+        msg["via"] = via
     return msg
 
 
@@ -236,10 +240,11 @@ def remotes_msg(
     remotes: list[dict[str, Any]],
     pairing_open: bool,
     seconds_left: int,
-    pending: list[dict[str, str]],
+    pending: list[dict[str, Any]],
 ) -> Message:
     """Paired remotes (``id``, ``name``, ``perms`` list of action names, ``last_seen_s``, ``via``),
-    the pairing window state, and requests waiting for the operator (``id``, ``name``, ``caps``)."""
+    the pairing window state, and requests waiting for the operator (``id``, ``name``, ``mac``,
+    ``caps``, ``seen_s``: seconds since its latest request)."""
     return {
         "type": "remotes",
         "v": IPC_VERSION,

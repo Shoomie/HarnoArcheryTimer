@@ -101,8 +101,10 @@ peer table.
 ## 5. Pairing
 
 1. Host `$P,open,<s>`: node broadcasts PAIR_OPEN every second (carries its X25519 public key).
-2. A remote node with no key, or after holding buttons 1+2 for 3 s at boot, replies PAIR_REQ every
-   second and blinks; a physical press on it is required inside the window.
+2. A node with no key (any freshly flashed box, no button needed) or after holding buttons 1+2 for 3 s at boot
+   (that one blinks) replies PAIR_REQ every second while it hears PAIR_OPEN. **No physical press** (changed
+   2026-10-04): the operator sees name and hardware ID (MAC) in the UI and accepts or rejects. A node that is
+   given a mesh key by its host (`$C,mkey`) leaves the keyless search at once.
 3. Master node forwards `$P,req,<mac>,<name>,<caps>` to the host. The operator accepts or rejects in
    the UI (default Cancel/Reject). Accept: host sends `$P,accept,<mac>,<mask hex>`.
 4. Master node: `shared = X25519(master_priv, remote_pub)`;
@@ -118,7 +120,7 @@ peer table.
 7. Closing the window (`$P,close`, timeout, emergency) stops PAIR_OPEN and ignores PAIR_REQ.
 
 The key agreement is not authenticated against an active attacker inside the 60 s window; the operator
-accept plus the physical press are the countermeasures. The mesh key never travels in the clear.
+accept (identified by name and MAC) is the countermeasure; the physical press was dropped on purpose. The mesh key never travels in the clear.
 
 ## 6. Radio-fed host (role `E`)
 

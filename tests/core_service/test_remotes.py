@@ -52,7 +52,9 @@ def test_request_outside_window_is_rejected_and_inside_is_pending():
     assert sent == [mt.PairReject(MAC)] and reg.message()["pending"] == []
     reg.open_pairing(30)
     reg.on_request(mt.PairRequest(MAC, "X", "B"))
-    assert reg.message()["pending"] == [{"id": MAC, "name": "X", "caps": "B"}]
+    assert reg.message()["pending"] == [
+        {"id": MAC, "name": "X", "mac": MAC, "caps": "B", "seen_s": 0}
+    ]
     assert reg.reject(MAC) and sent[-1] == mt.PairReject(MAC)
     assert not reg.accept(MAC, [])
 
@@ -126,3 +128,45 @@ def test_handle_ui_commands_and_pair_state():
     reg.open_pairing(30)
     reg.on_pair_state(mt.PairState(False, 0))
     assert not reg.window_active
+
+
+def test_discovery_renews_window_and_expires_stale_requests():
+    reg, clock, sent, _ = make()
+    assert reg.handle_ui("pair_open", {"seconds": 120, "discover": True})
+    assert reg.discovering and reg.needs_tick and sent == [mt.PairOpen(120)]
+    reg.on_request(mt.PairRequest(MAC, "node-0001", "L"))
+    clock.advance_s(30)
+    reg.tick()  # asked 30 s ago, the MCU repeats every ~10 s: it is gone
+    assert reg.message()["pending"] == []
+    clock.advance_s(60)  # 30 s left: nothing yet; then 15 s left: renewed within the same search
+    reg.tick()
+    assert sent == [mt.PairOpen(120)]
+    clock.advance_s(15)
+    reg.tick()
+    assert sent[-1] == mt.PairOpen(120) and len(sent) == 2 and reg.discovering
+
+
+def test_discovery_waits_while_someone_is_pending_and_stops_after_the_cap():
+    reg, clock, sent, _ = make()
+    reg.open_pairing(120, discover=True)
+    reg.on_request(mt.PairRequest(MAC, "node-0001", "L"))
+    clock.advance_s(110)
+    reg.on_request(mt.PairRequest(MAC, "node-0001", "L"))  # still asking
+    reg.tick()
+    assert len(sent) == 1 and len(reg.message()["pending"]) == 1  # no renewal under the operator
+    clock.advance_s(700)
+    reg.tick()
+    assert not reg.discovering and sent[-1] == mt.PairClose()
+
+
+def test_rejected_device_is_not_listed_again_during_the_search():
+    reg, _, _, _ = make()
+    reg.open_pairing(120, discover=True)
+    reg.on_request(mt.PairRequest(MAC, "node-0001", "L"))
+    assert reg.reject(MAC)
+    reg.on_request(mt.PairRequest(MAC, "node-0001", "L"))
+    assert reg.message()["pending"] == []
+    reg.close_pairing()
+    reg.open_pairing(120, discover=True)  # a new search forgets the refusal
+    reg.on_request(mt.PairRequest(MAC, "node-0001", "L"))
+    assert len(reg.message()["pending"]) == 1

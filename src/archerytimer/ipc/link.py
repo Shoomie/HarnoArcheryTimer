@@ -62,6 +62,7 @@ class CoreLink:
         self.hello: Optional[Message] = None
         self.hw_link = ""  # "up" / "down" / "" (unknown)
         self.upstream_ok = True  # False when a follower core has lost its leader
+        self.upstream_via = ""  # "radio" when the timer comes over the ESP32 radio only
         self.espnow: Optional[dict[str, Any]] = None
         self.audio: Optional[dict[str, Any]] = None  # the core's sound state
         self.node: Optional[dict[str, Any]] = None  # the core's network role state
@@ -126,6 +127,7 @@ class CoreLink:
                 elif kind == "link":
                     self.hw_link = str(msg.get("status", ""))
                     self.upstream_ok = msg.get("upstream", "up") != "down"
+                    self.upstream_via = str(msg.get("via", "") or "")
                     self.hw_fw = str(msg.get("fw", ""))
                     self.hw_chip = str(msg.get("chip", ""))
                     esp = msg.get("espnow")

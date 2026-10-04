@@ -108,7 +108,7 @@ def test_buttons_follow_state():
         "clear_restart",
     }
     offline = buttons_for(ctx(None, "lost"))
-    assert offline[0].id == "emergency" and not any(b.enabled for b in offline)
+    assert offline[0].id == "emergency" and not any(b.enabled for b in offline if b.id != "menu")
 
 
 def test_layout_tiles_the_output_exactly():

@@ -186,6 +186,8 @@ class UiApp:
         return ViewContext(
             snap=snap,
             core_state=state,
+            local_ok=link.connected,
+            upstream_via=getattr(link, "upstream_via", ""),
             t=self.t,
             sequence_name=self.t.pick(link.sequence_names(snap.sequence_id)) if snap else "",
             now_core_ns=now + offset,

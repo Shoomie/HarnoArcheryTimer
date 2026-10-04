@@ -25,7 +25,7 @@ unit-tested, simulated, or compiled only.
 ## Behaviour of the firmware to know (from WP-J)
 
 - The radio only starts when a mesh key exists or the node is in pairing. A keyless box needs `$C,mkey` over USB (the core
-  pushes it on every connect) or pairing (hold buttons 1+2 for 3 s at boot, then press).
+  pushes it on every connect) or pairing (a keyless box searches by itself, no button; the boot hold of buttons 1+2 still forces it).
 - Legacy `$M`: 0 host-driven master with radio off; 1 and 3 master (a mesh key is generated on the first bridge); 2 role E
   without feeding the host. A proto 1 host gets `$N`, not `$O`.
 - A node is listed as remote (kind R) when it only has capability K. RSSI is 0 on Arduino core 2.x.
