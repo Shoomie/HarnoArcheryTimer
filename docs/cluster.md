@@ -3,6 +3,17 @@
 Goal: several devices (Pi or PC, each with its own screen, lights, sound and buttons) run as one
 timer. Every device can run commands and every device can have light/sound hardware.
 
+## Joining without any network (radio-only follower, 2026-10-04)
+
+A club on a range with no wifi or LAN needs nothing but the two ESP32s. On the follower laptop choose Menu > Network and
+sync > "Radio only". The core then does **not** push a mesh key into its ESP32 (`mesh_config` has only the name), so a
+fresh ESP32 is keyless and asks the master to pair, exactly like the stand-alone boxes. On the master open Menu > Wireless
+remotes, tap the new device (name = the laptop's host name, plus MAC), pick its rights and Accept: the radio hands over the
+mesh key and a remote key, the follower then shows the timer from the radio feed and can send the commands it was granted.
+A box that already holds an old key: "Pair with the main timer again" (Network screen) sends a one-shot `$C,mkey,<32 zeros>`
+(`SerialWorker.forget_radio_keys`, never remembered) and the ESP32 forgets both keys and searches again. Works the same on a
+Pi or any other host. **Not yet run between two real C3 boards** (tested: unit tests, compile; keyless pairing C3/WROOM).
+
 ## Discovering new radio devices (2026-10-04)
 
 Menu > Remotes starts a search (`pair_open` with `discover`): the core keeps the MCU's pairing window open

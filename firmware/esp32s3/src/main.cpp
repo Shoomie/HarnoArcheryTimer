@@ -146,6 +146,12 @@ static bool onHostConfig(const char *key, const char *value) {
     uint8_t k[16];
     size_t len = 0;
     if (!hostcore::hexDecode(value, k, sizeof k, len) || len != 16) return false;
+    bool allZero = true;
+    for (uint8_t c : k) allZero = allZero && c == 0;
+    if (allZero) {  // "forget": back to keyless, the master's operator accepts this box by radio
+      radioForgetKeys();
+      return true;
+    }
     radioSetMeshKey(k);
     memset(k, 0, sizeof k);
     if (!configHas("radio")) radioSetEnabled(true);  // provisioning a key means the radio is wanted

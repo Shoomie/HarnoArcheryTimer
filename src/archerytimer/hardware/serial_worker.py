@@ -237,6 +237,11 @@ class SerialWorker:
         p.encode(Config(key, value))  # raises ProtocolError for an invalid pair, nothing queued
         self._queue.put((self._clock.now_ns(), _SetConfig(key, value)))
 
+    def forget_radio_keys(self) -> None:
+        """One-shot ``$C,mkey`` of all zeros: the ESP32 drops its radio keys and asks a master to
+        pair it. Never remembered (a reconnect must not wipe the key pairing just gave it)."""
+        self._mesh_send(Config("mkey", "0" * 32))
+
     def query_config(self) -> None:
         """Ask the MCU for its whole configuration; the answers come to ``on_config``."""
         self._mesh_send(ConfigQuery())

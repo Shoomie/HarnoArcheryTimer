@@ -127,15 +127,26 @@ class NetworkScreen(Screen):
         else:
             note, kind = t("network.hint_" + role), "text"
         out.append(Widget("", kind, (MARGIN, 0.67, 1 - 2 * MARGIN, 0.07), note))
-        out.append(
-            Widget(
-                "apply",
-                "primary",
-                (MARGIN, 0.75, 1 - 2 * MARGIN, 0.09),
-                t("network.apply"),
-                enabled=online and pending and not busy and not locked,
+        if radio and role == "follower" and not pending:
+            out.append(
+                Widget(
+                    "repair",
+                    "button",
+                    (MARGIN, 0.75, 1 - 2 * MARGIN, 0.09),
+                    t("network.repair"),
+                    enabled=online,
+                )
             )
-        )
+        else:
+            out.append(
+                Widget(
+                    "apply",
+                    "primary",
+                    (MARGIN, 0.75, 1 - 2 * MARGIN, 0.09),
+                    t("network.apply"),
+                    enabled=online and pending and not busy and not locked,
+                )
+            )
         out.append(nav_back(t("common.close")))
         return out
 
@@ -159,6 +170,17 @@ class NetworkScreen(Screen):
             cur = str(n.get("espnow", "off"))
             i = ESPNOW_MODES.index(cur) if cur in ESPNOW_MODES else 0
             send({"espnow": ESPNOW_MODES[(i + 1) % len(ESPNOW_MODES)]})
+        elif wid == "repair":
+            t = self.app.t
+
+            def forget() -> None:
+                self.app.link.send(cmd_msg("radio_forget_key"))
+
+            self.app.open_screen(
+                ConfirmScreen(
+                    self.app, t("network.repair_confirm"), t("network.repair_yes"), forget
+                )
+            )
         elif wid == "apply":
             t = self.app.t
             self.app.open_screen(

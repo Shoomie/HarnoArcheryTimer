@@ -142,6 +142,7 @@ class NodeControl:
         remotes: Optional[RemoteRegistry] = None,
         submit_command: Optional[Callable[[m.Command], None]] = None,
         on_reset_key: Optional[Callable[[], None]] = None,
+        on_forget_key: Optional[Callable[[], None]] = None,
         version: str = "",
     ) -> None:
         self.active = active  # what is running now
@@ -156,6 +157,7 @@ class NodeControl:
         self._remotes = remotes
         self._submit_command = submit_command or (lambda _c: None)
         self._on_reset_key = on_reset_key or (lambda: None)
+        self._on_forget_key = on_forget_key or (lambda: None)
         self._version = version
         self._state = ""  # session state for the beacon and roster
         self._publish: Callable[[Message], None] = lambda _m: None
@@ -223,6 +225,9 @@ class NodeControl:
                 return True
             if name == "radio_reset_key":
                 self._on_reset_key()
+                return True
+            if name == "radio_forget_key":
+                self._on_forget_key()
                 return True
             if name in UI_COMMANDS and self._remotes is not None:
                 return self._remotes.handle_ui(name, args)

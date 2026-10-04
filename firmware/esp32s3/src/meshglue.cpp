@@ -73,6 +73,7 @@ void NvsSessionStore::save(uint32_t master_id, uint32_t session) {
 // --- keys ---------------------------------------------------------------------------------------------------------
 bool keysLoadMesh(uint8_t out[16]) { return configGetBlob("mkey", out, 16); }
 void keysStoreMesh(const uint8_t key[16]) { configPutBlob("mkey", key, 16); }
+void keysClearMesh() { configRemove("mkey"); }
 bool keysLoadRemote(uint8_t out[16]) { return configGetBlob("rkey", out, 16); }
 void keysStoreRemote(const uint8_t key[16]) { configPutBlob("rkey", key, 16); }
 void keysClearRemote() { configRemove("rkey"); }

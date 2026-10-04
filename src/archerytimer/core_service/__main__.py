@@ -197,8 +197,12 @@ def build_service(
     espnow = node_settings.espnow if (args.espnow or node_settings.espnow != "off") else None
     keys = RadioKeys(data_dir() / RADIO_FILE)
     name = node_settings.name or socket.gethostname()
-    mesh_config = {"mkey": keys.mesh_key, "name": radio_name(name)}
     radio_only = role == "follower" and node_settings.leader == "radio"
+    mesh_config = {"name": radio_name(name)}
+    if (
+        not radio_only
+    ):  # a radio-only box gets its key from the master by radio pairing, never its own
+        mesh_config["mkey"] = keys.mesh_key
     # Every core announces itself and listens, so the Timer network screen lists them all.
     browser = LeaderBrowser(own_id=keys.node_id)
     beacon = Beacon(
@@ -220,6 +224,11 @@ def build_service(
         if worker is not None:
             worker.set_config("mkey", new_key)
 
+    def forget_key() -> None:
+        worker = getattr(live.get("service"), "worker", None)
+        if worker is not None:
+            worker.forget_radio_keys()
+
     node = NodeControl(
         node_settings,
         store=store,
@@ -232,6 +241,7 @@ def build_service(
         remotes=RemoteRegistry(clock, store=RemoteStore(data_dir() / "core_remotes.json")),
         submit_command=lambda cmd: live["service"].send(cmd),
         on_reset_key=reset_key,
+        on_forget_key=forget_key,
         version=__version__,
     )
     service: Union[CoreService, FollowerService, RadioFollowerService]

@@ -23,6 +23,7 @@ class NvsSessionStore : public mesh::SessionStore {
 // Keys. Mesh key (16 B) and own remote key (16 B, a paired remote) live in NVS ("mkey", "rkey").
 bool keysLoadMesh(uint8_t out[16]);
 void keysStoreMesh(const uint8_t key[16]);
+void keysClearMesh();
 bool keysLoadRemote(uint8_t out[16]);
 void keysStoreRemote(const uint8_t key[16]);
 void keysClearRemote();

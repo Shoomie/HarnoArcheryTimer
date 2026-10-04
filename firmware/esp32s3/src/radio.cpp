@@ -1057,6 +1057,22 @@ void radioEnterPairing(bool force) {
 }
 
 bool radioPairing() { return pairMode; }
+
+// A host that wants to join a network by radio (no shared network needed) clears the keys: the box is keyless again and
+// asks the master to pair, exactly like a freshly flashed one.
+void radioForgetKeys() {
+  keysClearMesh();
+  keysClearRemote();
+  memset(meshKey, 0, sizeof meshKey);
+  memset(remoteKey, 0, sizeof remoteKey);
+  hasMesh = hasRemote = false;
+  peers = PeerTable();
+  memset(shadow, 0, sizeof shadow);
+  windowClose();
+  rebuildArbiter();
+  pairMode = false;  // so radioEnterPairing starts a fresh search
+  radioEnterPairing(false);
+}
 bool radioPairBlink() { return pairMode && pairForced; }  // only the deliberate boot hold blinks; a keyless box just waits quietly
 void radioPairPress() {
   if (pairMode) pairPressed = true;

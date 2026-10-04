@@ -215,6 +215,11 @@ lines on the serial port (off by default). Still untested on hardware: the full 
 **Remote buttons (decided 2026-10-04):** rigid pinout and fixed button actions (1 start/next, 2 pause, 3 stop end, 4 emergency; GPIO 13/14/16/17); the
 master only decides rights per remote. Master-assigned button mapping (remote sends the button id) was considered and not chosen.
 
+**Network-free joining (2026-10-04, `docs/cluster.md`):** a radio-only follower core no longer pushes its own mesh key; its keyless ESP32
+pairs over the radio with the master (Menu > Wireless remotes > Accept); `radio_forget_key` / "Pair with the main timer again" resets it.
+Intended demo hardware: C3 Super Mini for the synced network (Windows master + Fedora follower, later a Pi), WROOM-32D only as the
+stand-alone breadboard remote (one button, three LEDs). Release images rebuilt and committed. 784 tests pass; the join between two real C3s is untested.
+
 **Not verified:** any firmware (never compiled or flashed: buttons, ESP-NOW, `$S` ids, reworked `main.cpp`);
 real MCU/light/horn hardware; the cluster on a real LAN; ESP-NOW range/latency; anything on the Pi (the M8 install script and systemd units, KMSDRM under `PAMName=login`,
 GPU path, audio output, GPIO, performance, benchmarks); multi-monitor placement; touchscreen; gamepad; local

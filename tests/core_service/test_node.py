@@ -146,6 +146,7 @@ def make_mesh(tmp_path, **kw):
         remotes=remotes,
         submit_command=cmds.append,
         on_reset_key=lambda: resets.append(1),
+        on_forget_key=lambda: resets.append("forget"),
         **kw,
     )
     ctl.bind(sent.append, None)
@@ -208,6 +209,8 @@ def test_pairing_commands_remote_commands_and_reset_key(tmp_path):
     ctl.on_mesh(mt.RemoteCommand("m1", 5, 2))
     assert len(cmds) == 1 and frames[-1] == mt.PairAck("m1", 2, 1)
     assert ctl.handle_message({"type": "cmd", "name": "radio_reset_key"}) and resets == [1]
+    assert ctl.handle_message({"type": "cmd", "name": "radio_forget_key"})
+    assert resets == [1, "forget"]
     clock.advance_s(31)
     ctl.tick()
     assert sent[-1]["pairing_open"] is False

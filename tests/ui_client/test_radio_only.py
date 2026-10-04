@@ -78,3 +78,24 @@ def test_network_follower_lost_keeps_menu_usable_with_generic_label(rig):  # noq
     ctx = app.make_context()
     assert light_view(ctx).label == app.t("light.lost")
     assert {b.id: b for b in buttons_for(ctx)}["menu"].enabled
+
+
+def test_radio_only_has_pair_again_button_with_confirmation(rig):  # noqa: F811
+    app, link, _ = rig
+    link.node = _node(role="follower", leader="radio")
+    _open(app)
+    w = _widgets(app)
+    assert "repair" in w and "apply" not in w and w["repair"].enabled
+    click(app, "repair")
+    assert app.screens[-1].name == "confirm"
+    assert not any(m.get("name") == "radio_forget_key" for m in link.sent)  # nothing yet
+    click(app, "yes")
+    assert link.sent[-1]["name"] == "radio_forget_key"
+
+
+def test_other_modes_keep_apply_button(rig):  # noqa: F811
+    app, link, _ = rig
+    link.node = _node()
+    _open(app)
+    w = _widgets(app)
+    assert "apply" in w and "repair" not in w
