@@ -166,6 +166,7 @@ class SerialWorker:
         self._next_session_ns = 0
         self._mesh = False  # the connected device speaks serial v2
         self.mesh_status: Optional[MeshStatus] = None
+        self._last_open_error = ""
         self.device_config: dict[str, str] = {}  # what the MCU echoed or reported with $C
         self._mcu_sound = True  # False: the MCU's horn is switched off, no $S / $B frames
         self._lights_on = True  # False: this device's lights are kept dark ($L,O)
@@ -325,12 +326,24 @@ class SerialWorker:
                 except Exception:
                     log.exception("closing port")
 
+    def _note_open_failure(self, exc: Exception) -> None:
+        """Log an open failure once per distinct message (the retry loop would flood the log)."""
+        text = str(exc)
+        if text == self._last_open_error:
+            return
+        self._last_open_error = text
+        hint = ""
+        if isinstance(exc, PermissionError) or "Permission denied" in text:
+            hint = " (no access: on Linux add the user to the 'dialout' group, then log in again)"
+        log.warning("cannot open serial port: %s%s", text, hint)
+
     def _connect(self) -> Optional[Port]:
         try:
             port = self._factory()
         except Exception as exc:
-            log.debug("open failed: %s", exc)
+            self._note_open_failure(exc)
             return None
+        self._last_open_error = ""
         try:
             port.timeout = 0.02
             port.write(p.encode(p.Hello()))
