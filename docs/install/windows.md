@@ -47,8 +47,7 @@ Plug the ESP32 board into a USB port. The program finds it automatically. If it 
 2. Start with `scripts\start_windows.bat --serial-port COM7`.
 
 Some cheap boards need a USB-serial driver (CH340 or CP210x); if no COM port appears, install the driver from
-the chip maker. The board firmware is in [`firmware/`](../../firmware/) and has **not been tested on real
-hardware yet**.
+the chip maker. The board firmware is in [`firmware/`](../../firmware/); flash a new board with the [flashing guide](../flashing.md).
 
 ## Update
 

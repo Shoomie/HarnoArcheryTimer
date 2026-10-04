@@ -1,11 +1,14 @@
-# Serial protocol v1
+# Serial protocol (v1 and v2)
+
+Version 1 is the base protocol (lights, sound, heartbeat, buttons). Version 2 adds the wireless mesh frames and is
+described in the last section; a device reports which one it speaks in `$I`.
 
 Host (Pi or PC) to microcontroller (MCU) link for lights and sound. Line-based ASCII with an
 NMEA-style XOR checksum, readable in any serial terminal and easy to parse on an Arduino.
 
 - Reference implementation: `src/archerytimer/hardware/protocol.py` (pure functions).
-- Shared test vectors: `firmware/test_vectors.txt`, replayed by the Python tests and meant to
-  be replayed by the firmware tests too.
+- Shared test vectors: `firmware/test_vectors.txt` (v1) and `firmware/test_vectors_v2.txt` (v2), replayed by the Python tests
+  and by the native firmware tests.
 - Simulated MCU: `src/archerytimer/hardware/sim_device.py`.
 
 ## Transport
@@ -41,15 +44,15 @@ and a bad one is discarded without affecting the next.
 | Host to MCU | `$T,<ms>` | 0 to 4294967295 | Remaining milliseconds, for an MCU-driven digit display. |
 | Host to MCU | `$H,<seq>,<L>,<G>` | seq 0 to 4294967295, light state as `$L`, group as `$G` or empty | Heartbeat carrying the full current state. |
 | Host to MCU | `$V` | none | Hello and version request. |
-| MCU to host | `$I,<proto>,<fw>,<caps>` | proto 0-255, fw up to 16 characters of `A-Za-z0-9._+-`, caps a subset of `LSBGTKN` (may be empty) | Hello reply. |
+| MCU to host | `$I,<proto>,<fw>,<caps>` | proto 0-255, fw up to 16 characters of `A-Za-z0-9._+-`, caps a subset of `LSBGTKNWR` (may be empty) | Hello reply. |
 | MCU to host | `$A,<seq>` | seq as in the heartbeat | Acknowledges that heartbeat. |
-| Host to MCU | `$M,<n>` | 0 off, 1 bridge, 2 follow, 3 auto | Set the ESP-NOW role (needs capability `N`); the MCU stores it. See `docs/espnow.md`. |
+| Host to MCU | `$M,<n>` | 0 off, 1 bridge, 2 follow, 3 auto | Set the ESP-NOW role (needs capability `N`); the MCU stores it. Legacy alias of `$R` (see Serial v2 and `docs/mesh.md`). |
 | MCU to host | `$N,<mode>,<peers>,<src>` | mode 0-3, peers 0-99 devices heard, src `H` host / `E` ESP-NOW / `N` none | ESP-NOW status, sent on change and about once a second. |
 | MCU to host | `$K,<id>,<0\|1>` | id 1-99, `1` = went down, `0` = went up | Button event from an input pin on the MCU (needs capability `K`). Sent on every debounced edge; the host decides what a press, hold or release means. |
 | MCU to host | `$E,<code>` | `CS`, `UC`, `BA` or `OV` | The MCU rejected a frame. |
 
 Capability letters: `L` lights, `S` MCU-timed whistle, `B` buzzer, `G` group, `T` remaining time,
-`K` the MCU reports button events (`$K`), `N` ESP-NOW sync (`$M`, `$N`).
+`K` the MCU reports button events (`$K`), `N` ESP-NOW sync (`$M`, `$N`), `W` repeat-safe whistle ids and timings (`$S`), `R` mesh v2.
 A command whose capability the MCU lacks is answered with `$E,UC`.
 
 ## Error codes
@@ -69,7 +72,7 @@ A frame that fails any check must not change MCU state.
 ## Behavior
 
 - **Idempotent assertions.** Repeating a state frame (`L`, `B`, `G`, `T`, `H`) is always
-  safe. See "Open point" below for `$S`.
+  safe. See "`$S` is an event" below for `$S`.
 - **Immediate sends.** State changes go out at once as one frame each, never batched behind
   other traffic.
 - **Heartbeat.** The host sends `$H` every 200 ms, re-asserting lights and group, so a
@@ -80,7 +83,7 @@ A frame that fails any check must not change MCU state.
   correctly count. The next valid frame clears the fault, and the host then re-asserts the
   full state. An MCU boots into the same safe state (RED, silent).
 - **Connect sequence.** Open the port, send `$V`, expect `$I` within 500 ms, push the full
-  state, then start heartbeats. The host warns the operator if `proto` is not 1.
+  state, then start heartbeats. The host handles proto 1 and 2 and sends the v2 frames only to proto 2 devices.
 - **Reconnect.** The host discovers the port by USB VID/PID with a manual override, and
   reconnects with backoff after an unplug.
 
@@ -106,7 +109,7 @@ host -> $H,2,G,AB*12     next heartbeat re-asserts green and group AB
 
 Related frames are covered in `firmware/test_vectors.txt`.
 
-## Serial v2 (CONTRACT for the mesh work, `docs/mesh.md`; vectors in `firmware/test_vectors_v2.txt`)
+## Serial v2 (mesh; radio side in `docs/mesh.md`)
 
 `$I` reports proto `2` and capability `R` (mesh v2) on devices that implement this section; a host treats
 proto 1 as a device without it and sends none of the frames below. All v1 behaviour is unchanged.

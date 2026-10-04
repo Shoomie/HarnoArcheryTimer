@@ -1,4 +1,4 @@
-# Audio (M7)
+# Audio
 
 Two independent sound outputs, each switchable on the Sound screen (Menu > Ljud / Sound):
 
@@ -34,11 +34,11 @@ message (also replayed to new clients). In a cluster each node keeps its own sou
 refused while an end runs or an emergency is active (`busy` in the `audio` message), and when no output
 is enabled. Real engine signals are never delayed by it.
 
-## `$S` healing (resolves the M1 open point)
+## Lost whistle frames heal (`$S` ids)
 
 Devices with capability `W` accept `$S,<n>,<id>` (id 1-255) and ignore a frame whose id equals the last
 one they acted on. The host repeats each whistle frame 40 ms and 120 ms later, so a frame lost on the
 wire is healed without ever replaying the blasts. Devices without `W` get the plain `$S,<n>` once. A
 newer whistle command cancels pending repeats. Switching MCU sound off sends `$S,0` and `$B,0` once and
-drops all later sound frames (RED and silence on shutdown are always sent). Firmware change is in
-`firmware/esp32s3/src/main.cpp` (`lastSoundId`), not yet compiled.
+drops all later sound frames (RED and silence on shutdown are always sent). The firmware side is `lastSoundId` in
+`firmware/esp32s3/src/main.cpp`.

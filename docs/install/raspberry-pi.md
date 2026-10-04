@@ -8,8 +8,7 @@ background service and keeps lights and sound going even if the display program 
 **Tested target:** Raspberry Pi 2 Model B, Raspberry Pi OS Lite 32-bit (Trixie), HDMI TV. Other Pi models should
 work but are untested. Time needed: about 30 minutes.
 
-> The installer has been run on a real Pi 2B once (the display works). Audio, GPIO buttons and the USB hardware
-> have not been tested on a Pi yet. See [deployment.md](../deployment.md) for what is verified.
+> What the installer sets up, in detail: [deployment.md](../deployment.md).
 
 ## What you need
 
@@ -72,8 +71,7 @@ Options: `--no-ui` for a lights/sound-only box without a display, `--user NAME` 
 ## 5. Connect the lights and horn (optional)
 
 Plug the ESP32 board into a USB port on the Pi. It is found automatically (the kiosk user is already in the
-`dialout` group). The status is shown in the program's hardware menu. The firmware in
-[`firmware/`](../../firmware/) has **not been tested on real hardware yet**.
+`dialout` group). The status is shown in the program's hardware menu. To flash a new board, see the [flashing guide](../flashing.md); the firmware sources are in [`firmware/`](../../firmware/).
 
 ## Settings
 

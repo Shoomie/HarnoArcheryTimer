@@ -1,13 +1,40 @@
-# Mesh v2: radio wire format, arbiter, pairing (CONTRACT, frozen in Wave 0)
+# Wireless mesh: radio wire format, arbiter, pairing
 
-Replaces the v1 frames of `docs/espnow.md` once implemented. Decisions: `docs/decisions/0002-*`. Work split:
-`docs/decisions/0003-*`. Vectors: `firmware/mesh_vectors.txt`. **Not verified on hardware.** Changing this
-file after Wave 1 starts is the integrator's job only.
+How ESP32 modules share the timer over ESP-NOW with no WiFi, router or computer in between. Design reasons:
+[decisions/0002](decisions/0002-mesh-and-firmware.md). Serial side: [protocol.md](protocol.md) (Serial v2).
+Test data shared by the C++ firmware core and the Python code: `firmware/mesh_vectors.txt`,
+`firmware/arbiter_scenarios.txt`.
+
+## In short
+
+- One **main timer** (master) broadcasts the timer state every 200 ms and at once on any change. Light boxes, other
+  computers' ESP32 modules and remotes follow it. A box with no computer shows lights and sounds the horn by itself.
+- A module trusts only frames signed with the installation's **mesh key**. New modules join by **pairing**: the
+  operator sees the module's name and hardware ID on the master and accepts it (Menu > Wireless remotes).
+- A paired **remote** can send start/next, pause, stop end and emergency, as far as the operator allowed.
+- With no live main timer for 1 s a module goes RED and silent.
+- Several devices on a LAN (network sync) and the radio can be combined: see [cluster.md](cluster.md).
+
+Typical set-ups:
+
+| Situation | Set-up |
+| --- | --- |
+| Computer with lights, extra light boxes further along the line | Computer's ESP32 as the master, boxes flashed as *stand-alone*; pair the boxes once |
+| A second computer with no network | Network screen > "Radio only"; the master accepts it as a remote |
+| Wireless buttons | WROOM or C3 stand-alone remote; the master sets its rights |
+| One device that must only obey its own computer | Radio off on that device |
+
+Limits: single hop (range is one ESP-NOW link, tens to a couple of hundred metres line of sight); it shares the 2.4 GHz
+band with WiFi, so keep any WiFi network on a different channel from the mesh (default channel 1, `$C,chan`); no
+automatic failover when the master dies (followers go RED, an operator makes another device the main timer);
+a pattern started from a heartbeat because a SOUND frame was lost starts from its beginning, up to 400 ms late.
+
+## Reference
 
 All integers little-endian. All frames are ESP-NOW broadcast on one fixed channel (`$C,chan`, default 1).
 Maximum frame 250 bytes (ESP-NOW limit); every frame here is far smaller.
 
-## 1. Frame layout
+### 1. Frame layout
 
 ```text
 0 magic 0xA8 | 1 version 0x02 | 2 type | 3 flags (bits 0-1 = hop, rest 0) | 4-5 epoch u16 | 6-7 seq u16
@@ -40,7 +67,7 @@ Maximum frame 250 bytes (ESP-NOW limit); every frame here is far smaller.
 | 9 | PAIR_ACC | `target_mac 6`, `blob 32` | pair K |
 | 10 | REVOKE | `target_mac 6` | mesh |
 
-REVOKE (added 2026-10-04): after `$P,del,<mac>` the master repeats REVOKE for that MAC every 2 s for 10 minutes. A node that holds a remote key and
+REVOKE: after `$P,del,<mac>` the master repeats REVOKE for that MAC every 2 s for 10 minutes. A node that holds a remote key and
 sees its own MAC forgets mesh and remote key (NVS) and searches for a master again (section 5), so "Remove" in the UI really un-pairs a
 connected device and it shows up as a new request when the operator searches. A box that was off the whole time must be reset by hand
 (`$C,mkey,<32 zeros>`, "Pair with the main timer again", or the boot hold). The Python codec does not know type 10 (only firmware sends it).
@@ -89,7 +116,7 @@ peer table.
   from the last one acted on, with `count == 0` stops any running pattern at once on every follower (a `$S,0`
   on the master); the replay guard does not apply to a stop (it is the safe direction). **Emergency latch** (`flags` bit1): outputs RED and stay
   RED while it is set, whatever `lights` says.
-- **Session counter (replay protection, decided 2026-10-04):** `session` is a u32 owned by the master's *core*,
+- **Session counter (replay protection):** `session` is a u32 owned by the master's *core*,
   persisted in its data dir and incremented at every core start and at every serial (re)connect to its MCU; the host
   passes it in `$R` and the mirror's host passes the leader's value. Every node keeps, per `master_id`, the highest
   `session` it has accepted **in NVS** (written only when it rises) and **drops a TIMER or SOUND whose `session` is
@@ -107,8 +134,7 @@ peer table.
 
 1. Host `$P,open,<s>`: node broadcasts PAIR_OPEN every second (carries its X25519 public key).
 2. A node with no key (any freshly flashed box, no button needed) or after holding buttons 1+2 for 3 s at boot
-   (that one blinks) replies PAIR_REQ every second while it hears PAIR_OPEN. **No physical press** (changed
-   2026-10-04): the operator sees name and hardware ID (MAC) in the UI and accepts or rejects. A node that is
+   (that one blinks) replies PAIR_REQ every second while it hears PAIR_OPEN. **No physical press** : the operator sees name and hardware ID (MAC) in the UI and accepts or rejects. A node that is
    given a mesh key by its host (`$C,mkey`) leaves the keyless search at once.
 3. Master node forwards `$P,req,<mac>,<name>,<caps>` to the host. The operator accepts or rejects in
    the UI (default Cancel/Reject). Accept: host sends `$P,accept,<mac>,<mask hex>`.
@@ -140,7 +166,7 @@ Frames added: `$R` role, `$C` config, `$Q` config query, `$U` timer state for th
 `$P` pairing and remote commands, `$O` status v2, `$D` roster, `$F`/`$W` radio feed, and `$S` with
 blast/gap. Proto number in `$I` becomes 2; capability letter `R` = mesh v2.
 
-## 8. Clarifications from Wave 1 (binding, found while two implementations were built)
+## 8. Clarifications
 
 - **Field meanings:** TIMER `phase` = index into the session sequence's phases; `group` = index into the SESSION
   groups; `round` = the engine's 0-based `round_index`; `remaining_ms` is 0 unless the mode is running (paused or
@@ -155,6 +181,6 @@ blast/gap. Proto number in `$I` becomes 2; capability letter `R` = mesh v2.
   not all events at the same millisecond.
 - **Implementation limits** (C++ core): 8 masters, 16 peers, 8 remotes, 8 groups; sequence id up to 16 characters on
   the wire.
-- **Known weaknesses, open:** (1) replayed old TIMER frames: **closed** by the session counter (section 4, decided). (2) emergency
-  delivery tail under 30 ms burst loss: **closed** by the safety-direction repeats (section 3, decided);
+- **Known weaknesses, open:** (1) replayed old TIMER frames: **closed** by the session counter (section 4). (2) emergency
+  delivery tail under 30 ms burst loss: **closed** by the safety-direction repeats (section 3);
   re-measure in the simulator.

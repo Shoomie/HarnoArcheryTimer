@@ -36,16 +36,16 @@ Not representative of the Pi. Short runs, 1080p windowed.
 | Jitter, hybrid wait, two-process | 0.7-1.4 ms p99, including under overload |
 | Jitter, threaded + animating | one 229 ms spike seen (GIL/SDL contention suspected) |
 
-The full 20 s Windows matrix was deferred by request; precise timing work moves to the
-real target hardware and to M2. A run may have been left going in the background; if so its
-output is in `docs/results/`.
+Raw numbers from the runs that were saved: `docs/results/`.
 
 ## Pi 2B results
 
-_Pending: to be run on hardware._
+No benchmark run has been recorded for the Pi 2B yet. Run the three commands above on the Pi and add the table here.
+In use, the kiosk renders smoothly on the Pi 2B: only layout changes log a `slow frame`
+(see `scripts/profile_paint.py` for the per-section paint cost).
 
-## Takeaways so far
+## Takeaways
 
 - Two-process design is supported by the data (see ADR 0001).
 - Engine wait must be an injectable strategy (plain on Linux, hybrid + 1 ms timer on Windows).
-- Pi: confirm KMSDRM availability and pygame-ce wheel vs apt `python3-pygame` with `env_probe.py`.
+- On the Pi the apt `python3-pygame` build is used (it has KMSDRM); `env_probe.py` shows what a machine supports.

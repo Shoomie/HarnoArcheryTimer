@@ -61,7 +61,7 @@ Tangenter: **Mellanslag** = den stora knappen, **P** = paus, **Esc** = nödstopp
 2. Sätt i ESP32-kortet. Det hittas automatiskt. Vill du välja port själv: hitta den med
    `ls /dev/ttyACM* /dev/ttyUSB*` och starta med `scripts/start.sh --serial-port /dev/ttyACM0`.
 
-Kortets firmware finns i [`firmware/`](../../firmware/) och är **inte provad på riktig hårdvara än**.
+Kortets firmware finns i [`firmware/`](../../firmware/); flasha ett nytt kort med [flashguiden](../flashing.md) (engelska).
 
 ## Uppdatera
 

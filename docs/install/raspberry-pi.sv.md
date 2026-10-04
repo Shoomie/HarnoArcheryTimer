@@ -8,8 +8,7 @@ bakgrundstjänst och håller lampor och ljud igång även om skärmprogrammet st
 **Testat mål:** Raspberry Pi 2 Model B, Raspberry Pi OS Lite 32-bit (Trixie), HDMI-TV. Andra Pi-modeller bör
 fungera men är inte testade. Tidsåtgång: cirka 30 minuter.
 
-> Installationen har körts på en riktig Pi 2B en gång (skärmen fungerar). Ljud, GPIO-knappar och USB-hårdvaran är
-> inte testade på en Pi än. Se [deployment.md](../deployment.md) (engelska) för vad som är verifierat.
+> Vad installationen gör i detalj: [deployment.md](../deployment.md) (engelska).
 
 ## Det här behöver du
 
@@ -72,8 +71,7 @@ Val: `--no-ui` för en låda med bara lampor/ljud utan skärm, `--user NAMN` fö
 ## 5. Koppla in lampor och horn (valfritt)
 
 Sätt ESP32-kortet i en USB-port på Pi:n. Det hittas automatiskt (kioskanvändaren ingår redan i gruppen
-`dialout`). Status syns i programmets hårdvarumeny. Firmwaren i [`firmware/`](../../firmware/) är **inte provad på
-riktig hårdvara än**.
+`dialout`). Status syns i programmets hårdvarumeny. Flasha ett nytt kort med [flashguiden](../flashing.md) (engelska); firmwarens källkod finns i [`firmware/`](../../firmware/).
 
 ## Inställningar
 

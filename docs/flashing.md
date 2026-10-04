@@ -9,9 +9,8 @@ One menu does everything, on Windows, Linux and macOS, from the project folder. 
 | Linux / macOS / Pi | `sh scripts/flash.sh` |
 | Anywhere | `python scripts/flash.py` |
 
-Status: **not verified on hardware.** The menu, its command lines and the image creation were tested without
-a board (fake runner in `tests/scripts/test_flash_tool.py`; images were built and merged on Windows). Nothing has
-been flashed yet. Do the first flash with one module and report what happens.
+The menu is tested without a board (fake runner in `tests/scripts/test_flash_tool.py`) and has been used to flash the
+C3 Super Mini and WROOM-32D modules.
 
 ## The menu
 
@@ -58,13 +57,13 @@ If the chip cannot be found: hold the BOOT button while plugging in USB, then tr
 ### 2. Update a module
 
 Same as flow 1 with the new `firmware/release` folder. Choose the **same kind** (normal or stand-alone) as
-before. Settings stored on the module (radio keys, role) are replaced by the flash: set them again if needed.
+before. Flashing a merged release image wipes the settings stored on the module (radio keys, role): pair it again.
 If a module acts strangely after an update, use menu `5` (Erase) and flash again.
 
 ### 3. A stand-alone box (follows the radio, no computer)
 
 1. Flow 1, but choose **stand-alone box** in step 5.
-2. Give it a mesh key over USB the first time (see `docs/mesh.md`), then plug it into a USB charger.
+2. Plug it into a USB charger. A stand-alone box has no mesh key yet: it asks the main timer to pair, and the operator accepts it under Menu > Wireless remotes (see [mesh.md](mesh.md)).
 
 ## Non-interactive use
 
@@ -89,25 +88,19 @@ fails on paths over 260 characters). `Remove the tool environment` offers to del
 Release images: `esptool merge-bin` joins bootloader (0x1000 on ESP32, 0x0 on S3 and C3), partitions (0x8000),
 `boot_app0` (0xE000) and the firmware (0x10000) into one image that is written at **0x0** on every chip.
 **Rebuild and commit `firmware/release/` whenever the firmware changes**, and bump `firmware/esp32s3/src/version.h`
-(the version in the manifest is read from there). The six images are produced with menu 3 once the
-`esp32` firmware folder exists; existing manifest entries are kept when only some variants are rebuilt.
+(the version in the manifest is read from there). Menu 3 builds all six images; existing manifest entries are kept when only some variants are rebuilt.
 
-## Dependency evaluation
+## Why prebuilt images and an on-demand tool environment
 
-The question: where do `esptool` and PlatformIO live?
+Volunteers should never need a compiler, and the Pi never flashes or compiles (a Pi 2B is slow and short of disk for 1 GB of
+toolchains). So:
 
-| Option | For | Against |
-| --- | --- | --- |
-| (i) in `install_pi.sh`, the deploy script or a `pyproject` extra | one install step | The Pi never flashes or compiles. A Pi 2B/Zero is slow and short of disk for 1 GB of toolchains. It would pollute the app `.venv` with firmware tooling, and volunteers would wait for a download they do not need. |
-| (ii) on-demand bootstrap in the menu | installs only when used, only after asking; project-local, removable, works the same on all three systems | first use needs internet |
-| (iii) prebuilt images + esptool only | volunteers never need a compiler; a prebuilt image pins a tested build; esptool is a few MB and pure Python | images must be rebuilt and committed when the firmware changes |
-
-**Recommendation (implemented): (iii) + (ii).** Ship prebuilt merged images in `firmware/release/`; the menu
-installs only `esptool` into `.flash-env/` on first use (after asking); PlatformIO is installed there only when
-someone chooses "build from source" or "create release images", with the 1 GB warning, and `--yes` does not
-approve it. Nothing is added to `install_pi.sh`, the deploy script or `pyproject.toml`. The app's `.venv` stays
-free of firmware tooling. An optional note in the Pi install guide is enough: "To flash an ESP32 from the Pi
-run `sh scripts/flash.sh`" (a Pi can run esptool, but it is a poor place to build).
+- Prebuilt merged images in `firmware/release/` pin a tested build; they must be rebuilt and committed when the firmware changes.
+- The menu installs only `esptool` (a few MB, pure Python) into the project-local `.flash-env/` on first use, after asking.
+- PlatformIO goes into the same folder only when someone chooses "build from source" or "create release images", with the 1 GB
+  warning; `--yes` does not approve it.
+- Nothing is added to `install_pi.sh`, the deploy script or `pyproject.toml`, so the app's `.venv` stays free of firmware tooling.
+  To flash from a Pi: `sh scripts/flash.sh` (esptool runs fine there).
 
 esptool is pinned to the 5.x series (`>=5,<6`, hyphenated command names). Change `ESPTOOL_SPEC` in
 `scripts/flash_tool/toolenv.py` if a later major version changes the commands.

@@ -37,8 +37,7 @@ python -m archerytimer.launcher --no-serial      # desktop: core + UI together
 Keys (all remappable in the `[keys]` table of the settings TOML): Space / Enter / PageDown /
 Right = primary action (start end, next end, resume), P / B / . = pause or resume, S = stop
 end, N = next, Backspace / PageUp / Left = back, **Esc = emergency stop**, C / R = after an
-emergency, resume shooting / restart the end, H = hide the operator bar, Ctrl+Q = quit (a
-guarded quit comes with M6). A presentation clicker is just a keyboard to the OS, so its
+emergency, resume shooting / restart the end, M / F1 = menu, Y = confirm a confirm dialog, H = hide the operator bar, Ctrl+Q = quit (asks for confirmation). A presentation clicker is just a keyboard to the OS, so its
 buttons already work through this map (Esc from a clicker stops the timer, which is the safe
 direction).
 
@@ -48,10 +47,10 @@ direction).
 | --- | --- | --- |
 | Mouse | UI: operator bar buttons | works, tested |
 | Keyboard, clicker, foot pedal (HID keyboard) | UI: `[keys]` map | works, tested |
-| Touchscreen | arrives as mouse clicks; M6 enlarges hit targets to >= 15 mm | works as mouse |
-| Gamepad / HID buttons | UI: `[joystick]` table, `button<N> = "<action>"` | untested on hardware |
-| MCU buttons (ESP32, Arduino...) | **core**: `$K,<id>,<0\|1>` frames, bound in `[buttons]` as `mcu:<id>` | tested with the simulator; firmware unbuilt |
-| Raspberry Pi GPIO | **core**: `gpiozero`, bound as `gpio:<pin>` | optional, never run on a Pi; the core logs a warning and carries on if `gpiozero` is missing |
+| Touchscreen | arrives as mouse clicks | works as mouse (not tried on a real touchscreen) |
+| Gamepad / HID buttons | UI: `[joystick]` table, `button<N> = "<action>"` | not tried on hardware |
+| MCU buttons (ESP32) | **core**: `$K,<id>,<0\|1>` frames, bound in `[buttons]` as `mcu:<id>` | works with the firmware |
+| Raspberry Pi GPIO | **core**: `gpiozero`, bound as `gpio:<pin>` | optional; the core logs a warning and carries on if `gpiozero` is missing |
 
 Core-side inputs reach the engine directly, so they work with no UI running. A binding is
 `press = "<action>"`, optionally `hold = "<action>"` and `hold_s` (then it fires on release:
@@ -60,7 +59,7 @@ Emergency can never have a hold. Actions are the engine's commands plus `primary
 engine resolves itself (start the waiting end, or resume a paused one), so every input device
 agrees on what "go" means.
 
-## Operator screens (M6)
+## Operator screens
 
 Menu (`M` / `F1` / the Meny button) opens a stack of screens in a `screen` section that
 replaces light, countdown and info. The timer stays visible as a banner (light colour, label,
@@ -73,8 +72,12 @@ the light; an emergency closes every screen. Screens are declarative: each retur
 | Setup (3 steps) | 1 preset card (or "last used"), 2 lines and ends, 3 start. Sends `configure`, remembers the setup |
 | Advanced | Prep time, shooting time, warning threshold, auto next end, alternate start order (per session) |
 | Timers | Quick timer lengths (`config/presets/timings.toml`, clubs can add their own) and a custom timer: prep, shooting time, yellow warning. Becomes the default for new sessions; "Standard" returns to each preset's own timing |
-| Menu | New session, timers, reset, settings, hardware status, shortcuts, quit |
-| Settings | Language, tenths, FPS cap, eco profile (UI only, saved in `ui_prefs.json` in the user data dir) |
+| Menu | New session, timers, reset, settings, hardware status, network and sync, followers, wireless remotes, shortcuts, quit |
+| Network and sync | This device's role (alone, main timer, follows, radio only), ESP-NOW role, lights on/off, the timer-network list; see `cluster.md` |
+| Followers | Leader only: approve a new follower, set its rights, block or remove it |
+| Wireless remotes | Search for new radio devices, accept with rights, change or remove paired remotes |
+| Settings | Language, tenths, FPS cap, eco profile, idle screen (UI only, saved in `ui_prefs.json` in the user data dir) |
+| Sound | Horn on the MCU / local speakers, volume, output device, sound test (`audio.md`) |
 | Hardware | Plain-language status of timer, lights, firmware, ESP-NOW, clock sync |
 | Shortcuts | Key bindings, read from the active key map |
 | Confirm | Reset, quit, replace a session. Space/Enter/Back cancel; only the red button or `Y` confirms |
@@ -100,7 +103,7 @@ shows screens.
   key press that wakes it does nothing else, except Emergency, which always acts. It never starts
   while an end runs or during an emergency. Idle costs one redraw per minute (none in the black style).
   All three options are in Settings and saved in `ui_prefs.json`.
-- **Font:** `assets/fonts/` holds the UI font if one is present (see its README); otherwise pygame's default.
+- **Font:** Inter Bold from `assets/fonts/`; any `.ttf`/`.otf` placed there is used instead (see its README).
 
 ## Several displays and several machines
 
@@ -115,8 +118,8 @@ Clock sync: a UI measures `offset = core_clock - local_clock` with ping/pong rou
 the same deadline; accuracy is bounded by network asymmetry (a fraction of a millisecond on
 wired links, a few ms on WiFi). The status bar shows the sync figure when the offset is non-trivial.
 
-Security note: the IPC port has no authentication. Only expose it on a network you trust (the
-club's own LAN or a direct cable), never the open internet.
+Security note: the IPC socket is not encrypted, and a remote display is watch-only until the leader approves it
+(`cluster.md`). Only expose it on a network you trust (the club's own LAN or a direct cable), never the open internet.
 
 Several devices that each have their own lights, sound and buttons run as a cluster (one
 leader, followers that mirror it and forward commands): see `docs/cluster.md`.
@@ -125,4 +128,5 @@ leader, followers that mirror it and forward commands): see `docs/cluster.md`.
 
 `scripts/ui_benchmark.py` (cost of one presented frame, headless SDL, dev PC, 1080p): software
 mean 1.8 ms, GPU path 4.0 ms (dummy driver, so the GPU number is not meaningful). Pi 2B
-numbers are pending: run `SDL_VIDEODRIVER=kmsdrm python scripts/ui_benchmark.py --fullscreen`.
+numbers: run `SDL_VIDEODRIVER=kmsdrm python scripts/ui_benchmark.py --fullscreen` on the Pi. On the Pi the ticking parts are GPU overlays
+(`deployment.md`).

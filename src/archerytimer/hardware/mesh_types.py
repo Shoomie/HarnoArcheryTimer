@@ -1,6 +1,6 @@
 """Shared types of the mesh v2 contract (``docs/mesh.md``, ``docs/protocol.md`` serial v2).
 
-Frozen in Wave 0: work packages import these, they do not change them. Contains the typed serial v2
+Contains the typed serial v2
 frames (parsing and encoding of the ``$`` lines belong to ``protocol.py``) and the radio payload
 dataclasses with their exact byte layout (``to_bytes`` / ``from_bytes``). Header, tag, HMAC are the
 frame codec in ``mesh_codec.py``.

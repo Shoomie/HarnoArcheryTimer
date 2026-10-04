@@ -47,8 +47,7 @@ Sätt ESP32-kortet i en USB-port. Programmet hittar det automatiskt. Om inte:
 2. Starta med `scripts\start_windows.bat --serial-port COM7`.
 
 Vissa billiga kort behöver en USB-seriell drivrutin (CH340 eller CP210x); om ingen COM-port dyker upp, installera
-drivrutinen från chiptillverkaren. Kortets firmware finns i [`firmware/`](../../firmware/) och är **inte provad på
-riktig hårdvara än**.
+drivrutinen från chiptillverkaren. Kortets firmware finns i [`firmware/`](../../firmware/); flasha ett nytt kort med [flashguiden](../flashing.md) (engelska).
 
 ## Uppdatera
 

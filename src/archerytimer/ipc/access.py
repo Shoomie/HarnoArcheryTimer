@@ -1,4 +1,4 @@
-"""Follower access control (CONTRACT, frozen; ``docs/cluster.md`` section "Follower access").
+"""Follower access control (``docs/cluster.md`` section "Follower access").
 
 Shared by the leader (enforces), the follower core (joins, proves its identity) and the UI. Pure
 functions and constants: no I/O, no clock.

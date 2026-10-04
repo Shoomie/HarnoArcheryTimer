@@ -61,7 +61,7 @@ Keys: **Space** = the big button, **P** = pause, **Esc** = emergency stop. See t
 2. Plug in the ESP32 board. It is found automatically. To choose the port yourself, find it with
    `ls /dev/ttyACM* /dev/ttyUSB*` and start with `scripts/start.sh --serial-port /dev/ttyACM0`.
 
-The board firmware is in [`firmware/`](../../firmware/) and has **not been tested on real hardware yet**.
+The board firmware is in [`firmware/`](../../firmware/); flash a new board with the [flashing guide](../flashing.md).
 
 ## Update
 

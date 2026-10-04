@@ -3,15 +3,17 @@
 One shared source set (`firmware/esp32s3/src`, logic in `firmware/lib/hostcore` and `firmware/lib/meshcore`) builds for
 three chips. The `esp32c3` and `esp32` projects only hold a `platformio.ini` that points `src_dir` at the shared sources.
 
-**Status: verified compiled only.** All variants build with PlatformIO (see sizes below) and the native tests pass
-(`firmware/test/native`). Nothing has been flashed or run on a real board: pins, buttons, radio, boot behaviour and the
-UART link are not verified on hardware.
+Current version: `esp-0.4.0` (`firmware/esp32s3/src/version.h`). Hardware-tested on the ESP32-C3 Super Mini and the WROOM-32D
+(host link, pairing, remote buttons, timer sync). The S3 builds compile and share the same sources but have not been run on a board.
+The portable logic has native tests (`firmware/test/native`, see the end of this page).
 
-> **Hardware note (2026-10-04):** the ESP32-C3 Super Mini builds set `-DRADIO_TX_POWER_QDBM=34` (8.5 dBm). At full power the
-> board was heard by a WROOM-32D but could not be heard back. `-DRADIO_DEBUG` adds serial debug lines (rx type, PAIR_REQ sends).
-
-> **Button defaults (2026-10-04):** the remote function is on and the four buttons send 1 start/next, 2 pause, 3 stop end, 4 emergency
-> out of the box (`$C,remote` / `$C,btn1..4` override them). What a paired remote may actually do is decided by the master's rights page.
+Notes:
+
+- The C3 Super Mini builds set `-DRADIO_TX_POWER_QDBM=34` (8.5 dBm): at full power a C3 was heard by a WROOM-32D but could not be
+  heard back. `-DRADIO_DEBUG` adds serial debug lines (rx type, pairing); off by default. `-DCORE_DEBUG_LEVEL=0` keeps Arduino's
+  log off the serial line.
+- The four remote buttons send 1 start/next, 2 pause, 3 stop end, 4 emergency out of the box (`$C,remote` / `$C,btn1..4` override
+  them). What a paired remote may actually do is decided by the master's rights page.
 
 ## Variants
 
@@ -24,11 +26,11 @@ UART link are not verified on hardware.
 | ESP32 classic (WROOM-32D) | `esp32dev` | `esp32-wroom-32d` | `firmware/esp32` | DevKit with USB-UART bridge (CP2102 / CH340 / CH9102), host attached |
 | ESP32 classic (WROOM-32D) | `esp32dev` | `esp32-wroom-32d-standalone` | `firmware/esp32` | Stand-alone box |
 
-Build: `cd firmware/<folder>; pio run -e <env>`. Stand-alone envs add `-DESPNOW_DEFAULT_MODE=2` (follow) and need a mesh
-key (`$C,mkey` over serial, or pairing). Common flags (`ESPNOW_CHANNEL`, `MESHCORE_EXTERNAL_HMAC`, `PIN_*`, `PIN_BEEP`,
+Build: `cd firmware/<folder>; pio run -e <env>`; or use the flashing menu ([flashing.md](flashing.md)), which also ships prebuilt images. Stand-alone envs add `-DESPNOW_DEFAULT_MODE=2` (follow) and get their mesh key by pairing
+(or `$C,mkey` over serial; [mesh.md](mesh.md)). Common flags (`ESPNOW_CHANNEL`, `MESHCORE_EXTERNAL_HMAC`, `PIN_*`, `PIN_BEEP`,
 `BEEP_HZ`, `BOOT_CHIME`) are listed at the top of `firmware/esp32s3/platformio.ini`.
 
-Compiled sizes (PlatformIO, core as installed in this session):
+Compiled sizes (PlatformIO):
 
 | Env | Flash | RAM (static) |
 | --- | --- | --- |
@@ -80,7 +82,7 @@ The host core finds the board by USB VID/PID (`hardware/discovery.py`) and speak
 - **USB-UART bridge (classic ESP32 DevKit):** the board shows up as a bridge chip: Silicon Labs CP210x `10C4:EA60`,
   WCH CH340 `1A86:7523`, WCH CH9102 `1A86:55D4`, FTDI `0403:6001`. They are tried after native-USB devices. The
   firmware uses UART0 at 115200 (no USB flags); RX and TX buffers are enlarged to 1 KB. For FTDI chips set the
-  latency timer to 1 ms. A bridge adds roughly 1-2 ms of latency compared with native USB (not measured here).
+  latency timer to 1 ms. A bridge adds roughly 1-2 ms of latency compared with native USB (estimate, not measured).
 - **DTR/RTS reset caveat:** most DevKits wire the bridge's DTR and RTS to EN and GPIO0, so a normal port open can
   reset the board (and a core restart would then drop the lights for about a second). The host therefore opens bridge
   ports with `dtr=False, rts=False` set before the open call (`open_serial(..., bridge=True)`). The raise-then-lower at
@@ -92,3 +94,18 @@ The host core finds the board by USB VID/PID (`hardware/discovery.py`) and speak
   the first hello; the worker's reconnect backoff (0.2 to 2 s) plus its 0.5 s hello wait cover the boot of about 1 s.
 - **Stand-alone boxes with no host:** UART0 drains into the pins whether or not anything listens, so the firmware
   never blocks for good on a print (a burst may wait for the 1 KB TX buffer to drain, a few ms at most).
+
+## Native tests
+
+The portable C++ cores (`firmware/lib/meshcore`: frames, HMAC, dedupe, arbiter, command gate, pairing; `firmware/lib/hostcore`: serial
+frames) are tested on the PC against the shared vectors and arbiter scenarios:
+
+```text
+cd firmware/test/native
+cmd /c .
+un_tests.bat            (Windows, MSVC)      sh run_tests.sh        (g++ or clang++)
+cmd /c .
+un_hostcore_tests.bat                        sh run_hostcore_tests.sh
+```
+
+Details of the mesh core API and what a device build must provide: [`firmware/lib/meshcore/README.md`](../firmware/lib/meshcore/README.md).

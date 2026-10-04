@@ -210,7 +210,7 @@ def settings_msg(values: Mapping[str, Any]) -> Message:
     return {"type": "settings", "v": IPC_VERSION, "values": dict(values)}
 
 
-# --- mesh v2 messages (CONTRACT, docs/decisions/0002 and 0003; frozen in Wave 0) ---------------
+# --- mesh messages (docs/mesh.md, docs/decisions/0002) ---------------------------------------
 # Core to UI. ``devices`` entries have the keys: id (stable string: mac or core id), name, kind
 # ("core"|"module"|"remote"), role ("leader"|"follower"|"alone"|"node"|"mirror"|"remote"|"radio"),
 # via ("self"|"lan"|"radio"|"usb"), follows (name of the main timer it follows, "" if none),
@@ -255,7 +255,7 @@ def remotes_msg(
     }
 
 
-# --- follower access (CONTRACT, ipc/access.py and docs/cluster.md; frozen) ----------------------
+# --- follower access (ipc/access.py, docs/cluster.md) -----------------------------------------
 # Follower core to leader: ``join`` {id, name}, ``auth`` {id, mac}. Leader to follower:
 # ``challenge``
 # {nonce}, ``access`` {status, perms, preset, leader (name), key?, mesh_key?}, ``denied`` {name}.
