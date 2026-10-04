@@ -146,6 +146,10 @@ bool parse_payload(FrameType t, Reader& r, Frame& f) {
       r.bytes(f.pair_acc.blob, 32);
       return r.done();
     }
+    case FrameType::Revoke: {
+      r.bytes(f.revoke.target_mac, kMacLen);
+      return r.done();
+    }
   }
   return false;
 }
@@ -221,6 +225,9 @@ bool write_payload(const Frame& f, Writer& w) {
       w.bytes(f.pair_acc.target_mac, kMacLen);
       w.bytes(f.pair_acc.blob, 32);
       return w.ok;
+    case FrameType::Revoke:
+      w.bytes(f.revoke.target_mac, kMacLen);
+      return w.ok;
   }
   return false;
 }
@@ -241,7 +248,7 @@ DecodeResult decode(const uint8_t* buf, size_t len, const uint8_t src_mac[kMacLe
   if (buf[0] != kMagic) return DecodeResult::Magic;
   if (buf[1] != kVersion) return DecodeResult::Version;
   const uint8_t type = buf[2];
-  if (type < 1 || type > 9) return DecodeResult::Type;
+  if (type < 1 || type > 10) return DecodeResult::Type;
   if (buf[3] != 0) return DecodeResult::Flags;  // hop 0 only in the first release, reserved bits 0
 
   const uint8_t* key = nullptr;

@@ -252,6 +252,16 @@ struct PendingReq {
   uint32_t lastFwdMs;
 };
 PendingReq pend[4];
+// Remotes the operator removed: the master keeps telling them (by MAC) to forget their keys, so they pair again.
+struct Revoked {
+  bool used;
+  uint8_t mac[6];
+  uint32_t until, nextMs;
+};
+Revoked revoked[4];
+uint8_t revokedNext = 0;
+const uint32_t REVOKE_FOR_MS = 600000;  // ten minutes: a box that was off for a moment still hears it
+const uint32_t REVOKE_EVERY_MS = 2000;
 // remote side
 bool pairMode = false, pairForced = false, pairPressed = false;
 uint32_t pairUntil = 0, nextReqMs = 0;
@@ -495,6 +505,21 @@ void pairReqTx(uint32_t now) {
   burstEncodeStart(reqB, ZERO_KEY, 16, now);
 }
 
+void revokeTx(uint32_t now) {
+  if (role != HostRole::M || !hasMesh) return;
+  for (auto &r : revoked) {
+    if (!r.used) continue;
+    if ((int32_t)(now - r.until) >= 0) { r.used = false; continue; }
+    if ((int32_t)(now - r.nextMs) < 0) continue;
+    r.nextMs = now + REVOKE_EVERY_MS;
+    prep(FrameType::Revoke);
+    memcpy(txf.revoke.target_mac, r.mac, 6);
+    uint8_t buf[kMaxFrame];
+    const size_t n = encode(txf, meshKey, 16, ownMac, buf, sizeof buf);
+    sendRaw(buf, n);
+  }
+}
+
 void cmdPump(uint32_t now) {
   if (!sender.due(now) || !hasRemote) return;
   prep(FrameType::Cmd);  // a NEW seq for every retransmit, the same counter
@@ -681,6 +706,10 @@ void handleRx(const RxItem &it, uint32_t now) {
     case FrameType::PairReq:
       onPairReq(mac, rxf.pair_req, now);
       break;
+    case FrameType::Revoke:
+      // Only a paired remote obeys, and only for its own MAC: it forgets both keys and asks to be paired again.
+      if (hasRemote && memcmp(rxf.revoke.target_mac, ownMac, 6) == 0) radioForgetKeys();
+      break;
     default:
       break;  // PAIR_OPEN of another master, PAIR_ACC not for us
   }
@@ -802,6 +831,7 @@ void radioTick(uint32_t now, bool hostAlive) {
   }
   helloTx(now);
   pairWindowTx(now);
+  revokeTx(now);
   pairReqTx(now);
   cmdPump(now);
   rosterPoll(now);
@@ -1024,6 +1054,17 @@ bool radioPairReject(const uint8_t mac[6]) {
 bool radioPairDelete(const uint8_t mac[6]) {
   gate.removeRemote(mac);
   keysEraseRemote(mac);
+  Revoked *slot = nullptr;
+  for (auto &r : revoked)
+    if (r.used && memcmp(r.mac, mac, 6) == 0) slot = &r;
+  if (!slot) {
+    slot = &revoked[revokedNext];
+    revokedNext = (uint8_t)((revokedNext + 1) & 3);
+  }
+  slot->used = true;
+  memcpy(slot->mac, mac, 6);
+  slot->until = millis() + REVOKE_FOR_MS;
+  slot->nextMs = millis();
   return true;
 }
 

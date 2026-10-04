@@ -647,6 +647,31 @@ static void testScenarios(const std::string& dir) {
   CHECK(count >= 12, "scenario count %d", count);
 }
 
+// REVOKE: signed with the mesh key, names one MAC; a wrong key or a short payload is refused.
+static void testRevoke() {
+  uint8_t mk[16], other[16], src[6] = {9, 8, 7, 6, 5, 4};
+  for (int i = 0; i < 16; i++) { mk[i] = uint8_t(i); other[i] = uint8_t(0x80 + i); }
+  Frame f;
+  std::memset(&f, 0, sizeof f);
+  f.type = FrameType::Revoke;
+  f.epoch = 7;
+  f.seq = 3;
+  const uint8_t target[6] = {1, 2, 3, 4, 5, 6};
+  std::memcpy(f.revoke.target_mac, target, 6);
+  uint8_t buf[kMaxFrame];
+  const size_t n = encode(f, mk, 16, src, buf, sizeof buf);
+  CHECK(n == kHeaderLen + 6 + kTagLen, "revoke frame length");
+  KeyRing kr;
+  kr.mesh_key = mk;
+  Frame out;
+  CHECK(decode(buf, n, src, kr, out) == DecodeResult::Ok && out.type == FrameType::Revoke, "revoke decodes");
+  CHECK(std::memcmp(out.revoke.target_mac, target, 6) == 0, "revoke target round trip");
+  KeyRing bad;
+  bad.mesh_key = other;
+  CHECK(decode(buf, n, src, bad, out) == DecodeResult::Tag, "revoke with the wrong mesh key is refused");
+  CHECK(decode(buf, n - 1, src, kr, out) != DecodeResult::Ok, "short revoke is refused");
+}
+
 int main(int argc, char** argv) {
   const std::string dir = argc > 1 ? argv[1] : ".";
   testCrypto();
@@ -658,6 +683,7 @@ int main(int argc, char** argv) {
   testSession();
   testSafetyRepeater();
   testCmd();
+  testRevoke();
   testScenarios(dir);
   std::printf("%d checks, %d failed (vectors: %d OK lines, %d ERR lines)\n", g_checks, g_fails, g_vecOk, g_vecErr);
   return g_fails ? 1 : 0;

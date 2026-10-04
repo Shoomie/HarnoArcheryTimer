@@ -38,7 +38,12 @@ Maximum frame 250 bytes (ESP-NOW limit); every frame here is far smaller.
 | 7 | PAIR_OPEN | `master_id u32`, `seconds_left u8`, `master_pub 32` (X25519) | mesh |
 | 8 | PAIR_REQ | `caps u8`, `name_len u8`, `name`, `remote_pub 32` | zero |
 | 9 | PAIR_ACC | `target_mac 6`, `blob 32` | pair K |
-| 10 | reserved (ADMIN), not implemented | | |
+| 10 | REVOKE | `target_mac 6` | mesh |
+
+REVOKE (added 2026-10-04): after `$P,del,<mac>` the master repeats REVOKE for that MAC every 2 s for 10 minutes. A node that holds a remote key and
+sees its own MAC forgets mesh and remote key (NVS) and searches for a master again (section 5), so "Remove" in the UI really un-pairs a
+connected device and it shows up as a new request when the operator searches. A box that was off the whole time must be reset by hand
+(`$C,mkey,<32 zeros>`, "Pair with the main timer again", or the boot hold). The Python codec does not know type 10 (only firmware sends it).
 
 Action codes (CMD): 1 primary, 2 pause, 3 resume, 4 stop_end, 5 next, 6 back, 7 emergency. Nothing else
 may ever be sent by a remote (no reset, quit, clear_emergency, settings). Permission mask bit `n-1`

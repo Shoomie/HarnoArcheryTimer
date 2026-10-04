@@ -220,6 +220,9 @@ pairs over the radio with the master (Menu > Wireless remotes > Accept); `radio_
 Intended demo hardware: C3 Super Mini for the synced network (Windows master + Fedora follower, later a Pi), WROOM-32D only as the
 stand-alone breadboard remote (one button, three LEDs). Release images rebuilt and committed. 784 tests pass; the join between two real C3s is untested.
 
+**Remove really unpairs (2026-10-04):** `$P,del` makes the master send REVOKE (mesh frame type 10, `docs/mesh.md`) so a removed remote forgets its keys and pairs
+again; flashing a merged release image also wipes the ESP32's stored keys. Native C++ tests 425 checks pass; not yet tried on two real boards.
+
 **Not verified:** any firmware (never compiled or flashed: buttons, ESP-NOW, `$S` ids, reworked `main.cpp`);
 real MCU/light/horn hardware; the cluster on a real LAN; ESP-NOW range/latency; anything on the Pi (the M8 install script and systemd units, KMSDRM under `PAMName=login`,
 GPU path, audio output, GPIO, performance, benchmarks); multi-monitor placement; touchscreen; gamepad; local

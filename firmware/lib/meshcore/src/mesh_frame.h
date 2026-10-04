@@ -19,7 +19,8 @@ constexpr uint32_t kKeepValue = 0xFFFFFFFFu;
 constexpr uint16_t kSoundAgeNone = 0xFFFF;
 
 enum class FrameType : uint8_t {
-  Hello = 1, Timer = 2, Sound = 3, Cmd = 4, CmdAck = 5, Session = 6, PairOpen = 7, PairReq = 8, PairAcc = 9
+  Hello = 1, Timer = 2, Sound = 3, Cmd = 4, CmdAck = 5, Session = 6, PairOpen = 7, PairReq = 8, PairAcc = 9,
+  Revoke = 10  // the master tells one paired remote (by MAC) to forget its keys; mesh key tag
 };
 
 enum : uint8_t { kLightG = 1, kLightY = 2, kLightR = 4 };
@@ -92,6 +93,10 @@ struct PairAccPayload {
   uint8_t blob[32];
 };
 
+struct RevokePayload {
+  uint8_t target_mac[kMacLen];
+};
+
 // One decoded (or to be encoded) frame. Only the member matching `type` is meaningful.
 struct Frame {
   FrameType type;
@@ -106,6 +111,7 @@ struct Frame {
   PairOpenPayload pair_open;
   PairReqPayload pair_req;
   PairAccPayload pair_acc;
+  RevokePayload revoke;
 };
 
 enum class DecodeResult : uint8_t { Ok, Length, Magic, Version, Type, Flags, NoKey, Tag, Payload };
