@@ -53,11 +53,10 @@ Keys: **Space** = the big button, **P** = pause, **Esc** = emergency stop. See t
 
 ## 5. Connect the lights and horn (optional)
 
-1. Add yourself to the serial-port group once, then **log out and in again**:
-
-   ```bash
-   sudo usermod -aG dialout $USER
-   ```
+1. Nothing to do by hand: `scripts/setup_desktop.sh` (step 2) already gave this computer access to the board
+   (serial group plus a udev rule that also keeps ModemManager away from it; it asks for your password once;
+   `--no-system` skips it) and `scripts/start.sh` works without logging out. If you skipped it, run
+   `sudo usermod -aG dialout $USER` and log in again.
 
 2. Plug in the ESP32 board. It is found automatically. To choose the port yourself, find it with
    `ls /dev/ttyACM* /dev/ttyUSB*` and start with `scripts/start.sh --serial-port /dev/ttyACM0`.

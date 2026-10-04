@@ -53,11 +53,10 @@ Tangenter: **Mellanslag** = den stora knappen, **P** = paus, **Esc** = nödstopp
 
 ## 5. Koppla in lampor och horn (valfritt)
 
-1. Lägg till dig själv i gruppen för serieportar en gång, och **logga sedan ut och in igen**:
-
-   ```bash
-   sudo usermod -aG dialout $USER
-   ```
+1. Inget att göra för hand: `scripts/setup_desktop.sh` (steg 2) ger redan datorn åtkomst till kortet
+   (seriegrupp plus en udev-regel som också håller ModemManager borta; frågar efter lösenordet en gång;
+   `--no-system` hoppar över det) och `scripts/start.sh` fungerar utan utloggning. Om du hoppade över det, kör
+   `sudo usermod -aG dialout $USER` och logga in igen.
 
 2. Sätt i ESP32-kortet. Det hittas automatiskt. Vill du välja port själv: hitta den med
    `ls /dev/ttyACM* /dev/ttyUSB*` och starta med `scripts/start.sh --serial-port /dev/ttyACM0`.
