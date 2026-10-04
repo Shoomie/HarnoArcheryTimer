@@ -22,3 +22,15 @@ dist/
 # OS
 .DS_Store
 Thumbs.db
+
+# Extra safety nets
+*.log
+*.obj
+*.exe
+*.pdb
+*.ilk
+.coverage
+htmlcov/
+.env
+*.env.local
+.claude/
