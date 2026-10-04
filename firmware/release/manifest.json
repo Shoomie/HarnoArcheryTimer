@@ -7,7 +7,7 @@
       "version": "esp-0.4.0",
       "size": 775088,
       "sha256": "816c2fd3acb84412c05a217c14db12f527429ec590a54fe072f5d243bda26d00",
-      "built": "2026-10-04 22:40",
+      "built": "2026-10-04 22:45",
       "file": "esp32-s3-devkitc-1.bin"
     },
     {
@@ -16,7 +16,7 @@
       "version": "esp-0.4.0",
       "size": 775088,
       "sha256": "a2c7590dff7fd8afcaa2a3b03fcdafc082cf4d3c7d88ade37c5b9ca74cec000d",
-      "built": "2026-10-04 22:40",
+      "built": "2026-10-04 22:45",
       "file": "esp32-s3-standalone.bin"
     },
     {
@@ -25,7 +25,7 @@
       "version": "esp-0.4.0",
       "size": 830064,
       "sha256": "ee3eb29487793173f2baf1bbb7846c48cee5250163182b9903cdf252c5542735",
-      "built": "2026-10-04 22:41",
+      "built": "2026-10-04 22:45",
       "file": "esp32c3-supermini.bin"
     },
     {
@@ -34,7 +34,7 @@
       "version": "esp-0.4.0",
       "size": 830080,
       "sha256": "f9d2f7942df6f4c2a54440948dbb082bd074eec3e5575ee3819930231acfecea",
-      "built": "2026-10-04 22:41",
+      "built": "2026-10-04 22:45",
       "file": "esp32c3-standalone.bin"
     },
     {
@@ -43,7 +43,7 @@
       "version": "esp-0.4.0",
       "size": 832000,
       "sha256": "73c194c9b2cfcc19d16d48144a4b9064af7429be41ffb37819b14b424efb3acb",
-      "built": "2026-10-04 22:41",
+      "built": "2026-10-04 22:45",
       "file": "esp32-wroom-32d.bin"
     },
     {
@@ -52,7 +52,7 @@
       "version": "esp-0.4.0",
       "size": 832016,
       "sha256": "9c2663f2a11b53d72023e4f121bbe03ff154bdeaada454dd7d0dc05cdc82242c",
-      "built": "2026-10-04 22:42",
+      "built": "2026-10-04 22:45",
       "file": "esp32-wroom-32d-standalone.bin"
     }
   ]
