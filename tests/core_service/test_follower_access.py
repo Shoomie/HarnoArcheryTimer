@@ -238,3 +238,18 @@ def test_store_ignores_damaged_file_and_radio_key_validates(tmp_path):
         raise AssertionError(f"accepted {wrong!r}")
     keys.set_mesh_key(MESH.lower())
     assert keys.mesh_key == MESH
+
+
+def test_removed_follower_forgets_its_key_and_asks_again(tmp_path):
+    svc, leader, ui, _keys, path = build(tmp_path, store_key=KEY, mode="pending")
+    try:
+        assert wait_for(lambda: len(leader.of("join")) >= 1)
+        leader.conn.send(access_msg("denied", [], "view", "Leader"))  # what Reject / Remove sends
+        assert wait_for(lambda: len(leader.of("join")) >= 2, timeout=6.0)  # it asks again by itself
+        assert (
+            json.loads(path.read_text(encoding="utf-8"))["key"] == ""
+        )  # and no longer claims approval
+    finally:
+        ui.close()
+        svc.stop()
+        leader.stop()

@@ -57,6 +57,8 @@ LEADER_GRACE_NS = NS_PER_S  # no leader for this long: RED and silent
 LOCAL_SETTINGS = frozenset({"espnow"})  # applied on this node; everything else goes to the leader
 FOLLOW_FILE = "core_follow.json"
 SYNC_LOG_NS = 10 * NS_PER_S  # how often the leader clock-sync values go to the log
+REJOIN_DELAY_S = 2.0  # after the leader refused us, ask to join again after this long
+REJOIN_MIN_NS = 20 * NS_PER_S  # never more often than this (a key that keeps failing must not spam)
 
 
 class FollowStore:
@@ -129,6 +131,7 @@ class FollowerService:
         self._pub_connected = False
         self._leader_id_seen = self._store.leader_id
         self._last_sync_log_ns = 0
+        self._last_rejoin_ns = -REJOIN_MIN_NS
         self._synced_published = False
         self.server = IpcServer(
             listener,
@@ -238,6 +241,8 @@ class FollowerService:
             "preset": str(msg.get("preset") or access.preset_of(perms)),
             "leader": leader,
         }
+        if status == "denied" and self._node_id:
+            self._forget_and_rejoin()
         key = str(msg.get("key") or "")
         if key:
             try:
@@ -256,6 +261,23 @@ class FollowerService:
                 log.warning("leader sent an unusable mesh key: %r", exc)
         log.info("access from leader: %s (%s)", status, self._access["preset"])
         self._publish_follower()
+
+    def _forget_and_rejoin(self) -> None:
+        """The leader removed this device (or its key no longer fits): forget the key and ask
+        again, so the operator sees a new request instead of a silent refusal."""
+        now = self._clock.now_ns()
+        if now - self._last_rejoin_ns < REJOIN_MIN_NS:
+            return
+        self._last_rejoin_ns = now
+        self._store.save("", self._store.leader, self._store.leader_id)
+        log.info("leader refused this follower: key forgotten, asking to join again")
+
+        def ask() -> None:
+            self.leader.send(join_msg(self._node_id, self._node_name))
+
+        timer = threading.Timer(REJOIN_DELAY_S, ask)
+        timer.daemon = True
+        timer.start()
 
     def _on_challenge(self, msg: Message) -> None:
         if not self._store.key or not self._node_id:
