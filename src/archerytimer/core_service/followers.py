@@ -190,6 +190,12 @@ class FollowerRegistry:
                 if c is conn:
                     del self._conns[fid]
                     changed = True
+                    f = self._followers.get(fid)
+                    if f is not None and f.status == "pending":
+                        # Never approved and gone again: a device only passing by is not kept.
+                        del self._followers[fid]
+                        self._save()
+                        log.info("pending follower %s left, forgotten", f.name)
         if changed:
             self._on_change()
 

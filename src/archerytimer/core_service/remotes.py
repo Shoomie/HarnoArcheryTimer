@@ -268,7 +268,9 @@ class RemoteRegistry:
         if pend is None:
             return False
         mask = mask_from_perms(perms)
-        self._remotes[mac] = Remote(mac, pend.name, mask, self._wall())
+        self._remotes[mac] = Remote(
+            mac, pend.name, mask, 0.0
+        )  # not heard yet: the device must answer
         self._store.save(self._remotes)
         self._send(mt.PairAccept(mac, mask))
         self._on_change()
@@ -283,11 +285,23 @@ class RemoteRegistry:
         return True
 
     def on_done(self, done: mt.PairDone) -> None:
-        """The MCU finished pairing a remote (its key exchange): refresh the listing."""
-        r = self._remotes.get(done.mac)
-        if r is not None:
-            self._remotes[done.mac] = replace(r, last_seen=self._wall())
+        """The MCU sent the pairing answer. That is not proof the device got it: ``heard`` is."""
         self._on_change()
+
+    def heard(self, mac: str) -> None:
+        """The radio heard a paired remote (its HELLO or a command): it really is connected."""
+        r = self._remotes.get(mac)
+        if r is None:
+            return
+        wall = self._wall()
+        first = r.last_seen == 0.0
+        self._remotes[mac] = replace(r, last_seen=wall)
+        if first:
+            self._store.save(self._remotes)
+            self._on_change()
+        elif wall - self._saved_seen_at >= LAST_SEEN_SAVE_S:
+            self._saved_seen_at = wall
+            self._store.save(self._remotes)
 
     # ---------------------------------------------------------------- registry
 

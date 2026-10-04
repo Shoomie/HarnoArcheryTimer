@@ -321,6 +321,10 @@ class NodeControl:
             if self._roster is not None:
                 self._roster.on_mesh(frame)
                 self._refresh_mesh()
+            if isinstance(frame, mt.RosterEntry) and self._remotes is not None:
+                self._remotes.heard(
+                    frame.mac
+                )  # a paired remote that shows up on the radio is connected
         elif self._remotes is not None:
             if isinstance(frame, mt.PairRequest):
                 self._remotes.on_request(frame)

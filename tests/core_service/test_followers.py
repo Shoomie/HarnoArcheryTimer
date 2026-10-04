@@ -426,3 +426,16 @@ def test_service_end_to_end():
         for c in clients:
             c.close()
         svc.stop()
+
+
+def test_pending_follower_that_leaves_is_forgotten_but_approved_one_stays():
+    reg = make()
+    passer = FakeConn()
+    join(reg, passer, "pi", "Pi passing by")
+    assert reg.get("pi") is not None
+    reg.on_disconnect(passer)
+    assert reg.get("pi") is None  # never approved, gone: not listed
+    kept = FakeConn()
+    approve(reg, kept)
+    reg.on_disconnect(kept)
+    assert reg.get("f1") is not None and reg.get("f1").status == "approved"  # type: ignore[union-attr]

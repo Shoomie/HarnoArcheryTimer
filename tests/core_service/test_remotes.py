@@ -170,3 +170,18 @@ def test_rejected_device_is_not_listed_again_during_the_search():
     reg.open_pairing(120, discover=True)  # a new search forgets the refusal
     reg.on_request(mt.PairRequest(MAC, "node-0001", "L"))
     assert len(reg.message()["pending"]) == 1
+
+
+def test_accepted_remote_is_not_heard_until_it_shows_up_on_the_radio():
+    reg, clock, sent, wall = make()
+    pair(reg)
+    (r,) = reg.message()["remotes"]
+    assert r["last_seen_s"] == -1.0  # accepted, but nothing heard from the device yet
+    reg.on_done(mt.PairDone(MAC))  # the MCU sent the answer: still not proof
+    assert reg.message()["remotes"][0]["last_seen_s"] == -1.0
+    wall[0] += 5.0
+    reg.heard("aa:bb:cc:dd:ee:99")  # an unknown device changes nothing
+    assert reg.message()["remotes"][0]["last_seen_s"] == -1.0
+    reg.heard(MAC)
+    wall[0] += 3.0
+    assert 2.5 < reg.message()["remotes"][0]["last_seen_s"] < 3.5

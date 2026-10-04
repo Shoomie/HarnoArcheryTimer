@@ -104,7 +104,10 @@ class RemotesScreen(Screen):
                 zip(remotes, grid(len(remotes), 2, y + 0.01, 0.83, 0.11, 0.01))
             ):
                 seen = int(float(r.get("last_seen_s", 0)))
-                text = t("remotes.item", name=r.get("name", "?"), s=seen)
+                if seen < 0:  # accepted, but the device has not been heard on the radio since
+                    text = t("remotes.item_unheard", name=r.get("name", "?"))
+                else:
+                    text = t("remotes.item", name=r.get("name", "?"), s=seen)
                 out.append(Widget(f"remote{i}", "button", rect, text))
         out.append(nav_back(t("common.close")))
         return out
