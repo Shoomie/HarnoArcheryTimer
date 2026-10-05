@@ -114,5 +114,6 @@ Regler och arkitektur: [CLAUDE.md](CLAUDE.md).
 
 ## Licens
 
-Inte vald än. Tills en `LICENSE`-fil läggs till är alla rättigheter förbehållna upphovspersonen. Typsnittet Inter
-följer med under SIL Open Font License (`assets/fonts/OFL.txt`).
+MIT (se [LICENSE](LICENSE)): fritt att använda, kopiera, ändra, dela och sälja, för alla ändamål och överallt. Bidrag
+är välkomna på samma licens. Tredjepartsdelar behåller sina egna öppna licenser, förtecknade i
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) (till exempel typsnittet Inter, `assets/fonts/OFL.txt`).

@@ -180,6 +180,12 @@ Read this file, `structure.md`, then the doc for the area you touch. Do not re-v
 hardening (4 h soak, unplug and UI-crash tests, `docs/benchmarks.md` on a Pi 2B), a Swedish operator guide with screenshots, and the
 open questions below. Ask the user only about leader failover, exact rule timings and light/horn hardware.
 
+## Licence
+
+MIT (`LICENSE`), chosen so anyone can use, change and redistribute it everywhere, including commercially. Third-party parts
+and their licences: `THIRD_PARTY_NOTICES.md`. Only add dependencies, fonts or assets under licences that allow free
+redistribution; keep the licence text next to bundled files.
+
 ## Open questions
 
 - [ ] **Exact rule timings** (prep, end times, warning, whistle conventions, finals) against current WA/SBF rules.
@@ -187,4 +193,3 @@ open questions below. Ask the user only about leader failover, exact rule timing
 - [ ] **Leader failover:** followers go RED and silent when the leader dies. Automatic takeover (and by whom), or manual only?
 - [ ] **Windows timing target:** is < 2 ms p99 also required on Windows, or Pi only?
 - [ ] **CI:** GitHub Actions (ruff, mypy, pytest on Ubuntu + Windows, Python 3.9 + latest)?
-- [ ] **Licensing:** project licence (MIT or GPL-3.0); sounds are synthesized, the font is OFL. No LICENSE file until decided.

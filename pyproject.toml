@@ -7,6 +7,7 @@ name = "archerytimer"
 version = "0.0.1"
 description = "Low-latency archery timing and display system with USB-serial lights and sound."
 readme = "README.md"
+license = { text = "MIT" }
 requires-python = ">=3.9"
 dependencies = [
     "pygame-ce>=2.4",

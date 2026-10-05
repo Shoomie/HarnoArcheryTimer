@@ -128,5 +128,6 @@ Project rules and architecture: [CLAUDE.md](CLAUDE.md). Benchmarks: [docs/benchm
 
 ## License
 
-Not chosen yet. Until a `LICENSE` file is added, all rights are reserved by the author. The bundled Inter font
-is under the SIL Open Font License (`assets/fonts/OFL.txt`).
+MIT (see [LICENSE](LICENSE)): free to use, copy, change, share and sell, for any purpose, anywhere. Contributions are
+welcome under the same licence. Third-party parts keep their own open licences, listed in
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) (for example the Inter font, `assets/fonts/OFL.txt`).
