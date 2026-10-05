@@ -1,6 +1,8 @@
 # Installera på Windows 10/11
 
-[English](windows.md) · [Linux](linux.sv.md) · [Raspberry Pi](raspberry-pi.sv.md) · [Tillbaka till README](../../README.sv.md)
+[English](windows.md) · **Svenska** · [中文](windows.zh.md) · [हिन्दी](windows.hi.md) · [Español](windows.es.md) · [Français](windows.fr.md) · [العربية](windows.ar.md) · [বাংলা](windows.bn.md) · [Português](windows.pt.md) · [Русский](windows.ru.md) · [اردو](windows.ur.md)
+
+[Linux](linux.sv.md) · [Raspberry Pi](raspberry-pi.sv.md) · [Tillbaka till README](../../README.sv.md)
 
 Tidsåtgång: cirka 10 minuter. Du behöver internet vid första installationen.
 
@@ -31,7 +33,7 @@ Dubbelklicka på **`scripts\start_windows.bat`**. Ett fönster med timern öppna
 
 - Ingen lamphårdvara ännu? Starta från en terminal med `scripts\start_windows.bat --no-serial` för en demo.
 - Helskärm på en TV: `scripts\start_windows.bat -- --fullscreen`
-- Engelskt gränssnitt: `scripts\start_windows.bat -- --lang en`
+- Svenskt gränssnitt: `scripts\start_windows.bat -- --lang sv` (språket kan också ändras i inställningsmenyn)
 - Andra skärmen för publiken, utan knappar: `scripts\start_windows.bat -- --profile audience --display 1`
 
 (För en genväg på skrivbordet: högerklicka `start_windows.bat` → *Skicka till → Skrivbord (skapa genväg)*.)

@@ -1,6 +1,8 @@
 # Install on desktop Linux (and macOS)
 
-[Svenska](linux.sv.md) · [Windows](windows.md) · [Raspberry Pi](raspberry-pi.md) · [Back to README](../../README.md)
+**English** · [Svenska](linux.sv.md) · [中文](linux.zh.md) · [हिन्दी](linux.hi.md) · [Español](linux.es.md) · [Français](linux.fr.md) · [العربية](linux.ar.md) · [বাংলা](linux.bn.md) · [Português](linux.pt.md) · [Русский](linux.ru.md) · [اردو](linux.ur.md)
+
+[Windows](windows.md) · [Raspberry Pi](raspberry-pi.md) · [Back to README](../../README.md)
 
 For a Raspberry Pi that boots straight into the timer, use the [Raspberry Pi guide](raspberry-pi.md) instead.
 This page is for a normal Linux PC or laptop with a desktop (tested on the Debian/Ubuntu family; others work
@@ -45,7 +47,7 @@ scripts/start.sh
 
 - Demo without lights hardware: `scripts/start.sh --no-serial`
 - Fullscreen: `scripts/start.sh -- --fullscreen`
-- English interface: `scripts/start.sh -- --lang en`
+- Swedish interface: `scripts/start.sh -- --lang sv` (the language can also be changed in the settings menu)
 - Audience screen on the second monitor, no controls: `scripts/start.sh -- --profile audience --display 1`
 
 Keys: **Space** = the big button, **P** = pause, **Esc** = emergency stop. See the

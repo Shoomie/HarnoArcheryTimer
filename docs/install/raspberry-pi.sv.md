@@ -1,6 +1,8 @@
 # Installera på Raspberry Pi (TV-kiosk)
 
-[English](raspberry-pi.md) · [Windows](windows.sv.md) · [Linux](linux.sv.md) · [Tillbaka till README](../../README.sv.md)
+[English](raspberry-pi.md) · **Svenska** · [中文](raspberry-pi.zh.md) · [हिन्दी](raspberry-pi.hi.md) · [Español](raspberry-pi.es.md) · [Français](raspberry-pi.fr.md) · [العربية](raspberry-pi.ar.md) · [বাংলা](raspberry-pi.bn.md) · [Português](raspberry-pi.pt.md) · [Русский](raspberry-pi.ru.md) · [اردو](raspberry-pi.ur.md)
+
+[Windows](windows.sv.md) · [Linux](linux.sv.md) · [Tillbaka till README](../../README.sv.md)
 
 Resultat: Pi:n startar direkt in i timern på TV:n, utan inloggning med tangentbord. Timerkärnan körs som en
 bakgrundstjänst och håller lampor och ljud igång även om skärmprogrammet startar om.
@@ -80,7 +82,7 @@ Extra startval finns i två små filer. Redigera dem med `sudo nano`:
 | Fil | Används för | Exempel |
 | --- | --- | --- |
 | `/etc/archerytimer/core.env` | bakgrundskärnan | `CORE_ARGS="--no-audio"` |
-| `/etc/archerytimer/ui.env` | skärmen | `UI_ARGS="--lang en --profile audience"` |
+| `/etc/archerytimer/ui.env` | skärmen | `UI_ARGS="--lang sv --profile audience"` |
 
 Aktivera efter ändring: `sudo systemctl restart archerytimer-core` och starta om (eller logga ut från konsolen)
 för skärmen. Flera Pi:ar tillsammans (en ledare, flera följare): se [cluster.md](../cluster.md) (engelska).

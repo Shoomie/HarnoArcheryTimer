@@ -1,4 +1,4 @@
-"""Locale files (TOML) with Swedish first and English fallback."""
+"""Locale files (TOML) with English as the default and fallback."""
 
 from __future__ import annotations
 
@@ -34,7 +34,7 @@ def load_locale(lang: str, directory: Path = DEFAULT_DIR) -> dict[str, str]:
 
 
 class Translator:
-    def __init__(self, lang: str = "sv", directory: Path = DEFAULT_DIR) -> None:
+    def __init__(self, lang: str = "en", directory: Path = DEFAULT_DIR) -> None:
         self.lang = lang
         self._primary = load_locale(lang, directory)
         self._fallback = load_locale("en", directory) if lang != "en" else {}
@@ -52,4 +52,4 @@ class Translator:
 
 
 def make_translator(lang: Optional[str] = None) -> Translator:
-    return Translator(lang or "sv")
+    return Translator(lang or "en")

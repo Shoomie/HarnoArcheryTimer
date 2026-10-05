@@ -28,7 +28,7 @@ Renderers (`renderer/`): `gpu` (SDL renderer API via `pygame._sdl2.video`) and `
 
 ```text
 python -m archerytimer.ui_client [--fullscreen] [--display N] [--profile full|audience]
-    [--renderer auto|gpu|software] [--fps 60] [--tenths] [--lang sv|en]
+    [--renderer auto|gpu|software] [--fps 60] [--tenths] [--lang en|sv]
     [--host CORE_IP --tcp-port 8765]
     [--sequence indoor_3arrows --groups AB,CD --ends 2]   # dev: configure an idle core
 python -m archerytimer.launcher --no-serial      # desktop: core + UI together

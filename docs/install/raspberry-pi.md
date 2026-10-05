@@ -1,6 +1,8 @@
 # Install on a Raspberry Pi (TV kiosk)
 
-[Svenska](raspberry-pi.sv.md) · [Windows](windows.md) · [Linux](linux.md) · [Back to README](../../README.md)
+**English** · [Svenska](raspberry-pi.sv.md) · [中文](raspberry-pi.zh.md) · [हिन्दी](raspberry-pi.hi.md) · [Español](raspberry-pi.es.md) · [Français](raspberry-pi.fr.md) · [العربية](raspberry-pi.ar.md) · [বাংলা](raspberry-pi.bn.md) · [Português](raspberry-pi.pt.md) · [Русский](raspberry-pi.ru.md) · [اردو](raspberry-pi.ur.md)
+
+[Windows](windows.md) · [Linux](linux.md) · [Back to README](../../README.md)
 
 Result: the Pi boots straight into the timer on the TV, with no keyboard login. The timer core runs as a
 background service and keeps lights and sound going even if the display program restarts.
@@ -80,7 +82,7 @@ Extra start options live in two small files. Edit them with `sudo nano`:
 | File | Used for | Example |
 | --- | --- | --- |
 | `/etc/archerytimer/core.env` | the background core | `CORE_ARGS="--no-audio"` |
-| `/etc/archerytimer/ui.env` | the display | `UI_ARGS="--lang en --profile audience"` |
+| `/etc/archerytimer/ui.env` | the display | `UI_ARGS="--lang sv --profile audience"` |
 
 Apply after editing: `sudo systemctl restart archerytimer-core` and reboot (or log out of the console) for the
 display. Running several Pis together (one leader, followers): see [cluster.md](../cluster.md).

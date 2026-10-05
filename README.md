@@ -1,13 +1,13 @@
 # Archery Timer
 
-**English** · [Svenska](README.sv.md)
+**English** · [Svenska](README.sv.md) · [中文](README.zh.md) · [हिन्दी](README.hi.md) · [Español](README.es.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [বাংলা](README.bn.md) · [Português](README.pt.md) · [Русский](README.ru.md) · [اردو](README.ur.md)
 
 An open-source archery shooting clock. It runs the timer at competitions and training, shows it on a TV or
 monitor, and drives traffic lights and a horn over USB. Built for a small archery club and operated by
 volunteers, so the screen has one obvious button for what happens next and an always-visible emergency stop.
 
 - Runs on **Windows 10/11**, **Linux**, **Raspberry Pi** (2B and up, as a TV kiosk) and macOS.
-- Swedish and English interface (Swedish is the default).
+- Interface in English (the default) and Swedish.
 - Timer, lights and sound keep running even if the display crashes.
 - Optional ESP32 board for lights and horn, optional second screens and several devices on one network.
 
@@ -73,7 +73,7 @@ Add them after the start script, display options after `--`:
 ```text
 scripts/start.sh --no-serial                      demo without hardware
 scripts/start.sh --serial-port COM7               choose the USB port yourself (Linux: /dev/ttyACM0)
-scripts/start.sh -- --fullscreen --lang en        fullscreen, English
+scripts/start.sh -- --fullscreen --lang sv        fullscreen, Swedish interface
 scripts/start.sh -- --profile audience --display 1   audience screen on the second monitor, no controls
 ```
 
@@ -94,7 +94,7 @@ On Windows use `scripts\start_windows.bat` instead of `scripts/start.sh`.
 | | |
 | --- | --- |
 | [docs/README.md](docs/README.md) | Index of all documentation |
-| [docs/install/](docs/install/) | Install guides (English and Swedish) |
+| [docs/install/](docs/install/) | Install guides (11 languages) |
 | [docs/ui.md](docs/ui.md) | Screens, keys, display profiles |
 | [docs/protocol.md](docs/protocol.md) · [docs/ipc.md](docs/ipc.md) | USB serial protocol; core to display protocol |
 | [docs/deployment.md](docs/deployment.md) · [docs/benchmarks.md](docs/benchmarks.md) | Raspberry Pi internals; timing and rendering measurements |
@@ -105,7 +105,7 @@ On Windows use `scripts\start_windows.bat` instead of `scripts/start.sh`.
 ```text
 src/archerytimer/   the program (core service, UI client, hardware, audio, IPC)
 config/             timing sequences and setup presets (TOML, placeholders)
-locales/            all texts, sv.toml and en.toml
+locales/            all interface texts, en.toml and sv.toml
 assets/             font (Inter, OFL)
 firmware/           ESP32 firmware (PlatformIO), prebuilt images, shared test vectors
 scripts/            install/start scripts, Raspberry Pi installer, flashing menu, benchmarks
@@ -124,7 +124,7 @@ ruff check . && ruff format --check .
 mypy
 ```
 
-Project rules and architecture: [CLAUDE.md](CLAUDE.md). Benchmarks: [docs/benchmarks.md](docs/benchmarks.md).
+Translating the documentation or the interface: see [CONTRIBUTING.md](CONTRIBUTING.md). Project rules and architecture: [CLAUDE.md](CLAUDE.md). Benchmarks: [docs/benchmarks.md](docs/benchmarks.md).
 
 ## License
 

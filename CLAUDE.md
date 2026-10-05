@@ -6,7 +6,7 @@ Swedish club, operated by non-technical volunteers. Python 3.9+, pygame-ce, pyse
 
 Where things are: **`structure.md`**. Detail docs: `docs/` (index in `docs/README.md`: `ui`, `audio`, `cluster`, `mesh`,
 `firmware`, `flashing`, `protocol`, `ipc`, `deployment`, `benchmarks`, `install/`, `decisions/`). Entry points for humans:
-`README.md` (English) and `README.sv.md` (Swedish).
+`README.md` (English, the source) and `README.<code>.md` in 10 more languages (sv zh hi es fr ar bn pt ru ur).
 
 ## Working agreement
 
@@ -93,7 +93,7 @@ All numbers are **placeholders to confirm** with WA/SBF rules. Presets are TOML 
 add their own. Built: Indoor 18 m (3 arrows), Outdoor qualification 6 and 3 arrows, Practice ends, Free
 training. Not built: individual finals (alternating per-arrow clock), team/mixed team, shoot-off. Setup toggles:
 line rotation, arrows and time per end, prep time, yellow warning threshold, ends and practice ends,
-auto-advance, whistle counts, tenths in the last seconds, language (Swedish first, English).
+auto-advance, whistle counts, tenths in the last seconds, interface language (English default, Swedish).
 
 ## UX requirements
 
@@ -120,7 +120,7 @@ Benchmark: a volunteer who has never seen the program runs a full session after 
 - Tests: engine tests use `FakeClock` and never sleep; protocol tests use shared vectors; performance
   scripts and hardware tests (`scripts/hw_e2e_two_boards.py`) stay separate from the unit suite (results in
   `docs/benchmarks.md`).
-- Docs: the READMEs and `docs/install/` are for volunteers (plain words; keep the Swedish copies in step with the English ones).
+- Docs: the READMEs and `docs/install/` are for volunteers (plain words). English is the source; keep the translations (`sv zh hi es fr ar bn pt ru ur`, files `*.<code>.md`) in step with it. How: `CONTRIBUTING.md`.
   Describe how things are, not how they came to be: no work-in-progress notes, change dates or milestone talk outside ADRs.
 - Tooling: `.venv\Scripts\python.exe` on Windows (Python 3.14, pygame-ce 2.5.8). Multi-line edits are easiest
   as a small Python script in the scratchpad (big shell heredocs with quotes have failed). Headless UI needs
@@ -138,7 +138,7 @@ Windows), native C++ tests pass, ruff and mypy clean.
 | Engine and CLI | Deadline FSM, line rotation, per-session overrides, emergency/pause/back/next/reset, auto-advance |
 | Serial | Protocol v1 and v2, simulated MCU, serial worker with heartbeat/watchdog/reconnect, discovery across VID/PID candidates |
 | Core service and IPC | Leader, LAN follower, radio-only follower, follower approval and rights, timer-network roster, wireless remotes, manual takeover |
-| UI | Sectioned renderer (GPU overlays and software fallback), setup wizard, timers, menu, settings, hardware, sound, network, remotes, followers, confirm, idle screen, undo, audience profile, Swedish and English |
+| UI | Sectioned renderer (GPU overlays and software fallback), setup wizard, timers, menu, settings, hardware, sound, network, remotes, followers, confirm, idle screen, undo, audience profile, English (default) and Swedish interface; docs in 11 languages |
 | Audio | Synthesized horn, MCU and local outputs, volume, device, sound test, repeat-safe `$S` ids |
 | Firmware | `esp-0.4.0` for ESP32-S3, C3 Super Mini and WROOM-32D (host-attached and stand-alone variants), mesh v2, remote buttons, beeper; prebuilt images and a flashing menu |
 | Deployment | `install_pi.sh` (console kiosk on tty1 or `--ui-mode service`), systemd core unit, journald cap, deploy script, desktop setup/start scripts for Windows and Linux |
@@ -177,7 +177,7 @@ from a radio heartbeat after a lost SOUND frame can start up to 400 ms late; the
 ## Resume here (new instance)
 
 Read this file, `structure.md`, then the doc for the area you touch. Do not re-verify finished work. Candidate next work: long-run
-hardening (4 h soak, unplug and UI-crash tests, `docs/benchmarks.md` on a Pi 2B), a Swedish operator guide with screenshots, and the
+hardening (4 h soak, unplug and UI-crash tests, `docs/benchmarks.md` on a Pi 2B), an operator guide with screenshots, and the
 open questions below. Ask the user only about leader failover, exact rule timings and light/horn hardware.
 
 ## Licence

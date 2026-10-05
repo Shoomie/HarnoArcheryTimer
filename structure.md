@@ -98,8 +98,8 @@ Dependency direction: `common` <- `core` <- (`hardware`, `audio`, `ipc`) <- `cor
 
 | Path | What |
 | --- | --- |
-| `README.md`, `README.sv.md` | Entry points (English, Swedish) |
-| `docs/README.md` | Index. `install/` has Windows, Linux and Pi guides in English and Swedish |
+| `README.md`, `README.<code>.md` | Entry points (English, Swedish, Chinese, Hindi, Spanish, French, Arabic, Bengali, Portuguese, Russian, Urdu) |
+| `docs/README.md` | Index. `install/` has Windows, Linux and Pi guides in the same 11 languages (`<name>.<code>.md`) |
 | `docs/` | `ui`, `audio`, `cluster`, `mesh`, `firmware`, `flashing`, `protocol`, `ipc`, `deployment`, `benchmarks`, `results/`, `decisions/` (design records) |
 | `tests/` | Mirrors `src/`: `core`, `common`, `hardware`, `audio`, `ipc`, `core_service`, `ui_client`, `mesh_sim`, `scripts`, `deploy` (static checks of units/scripts); fixtures in `conftest.py` |
 

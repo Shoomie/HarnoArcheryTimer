@@ -1,13 +1,13 @@
 # Archery Timer (Bågskyttetimer)
 
-[English](README.md) · **Svenska**
+[English](README.md) · **Svenska** · [中文](README.zh.md) · [हिन्दी](README.hi.md) · [Español](README.es.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [বাংলা](README.bn.md) · [Português](README.pt.md) · [Русский](README.ru.md) · [اردو](README.ur.md)
 
 En öppen källkod-klocka för bågskytte. Den kör skjuttiden på tävlingar och träning, visar den på en TV eller
 skärm och styr lampor och signalhorn via USB. Gjord för en liten bågskyttklubb och för frivilliga som inte är
 tekniker: skärmen har en tydlig knapp för det som händer härnäst och en nödstopp-knapp som alltid syns.
 
 - Fungerar på **Windows 10/11**, **Linux**, **Raspberry Pi** (2B och nyare, som TV-kiosk) och macOS.
-- Svenskt och engelskt gränssnitt (svenska är standard).
+- Gränssnitt på engelska (standard) och svenska.
 - Tid, lampor och ljud fortsätter även om skärmprogrammet kraschar.
 - Valfritt ESP32-kort för lampor och horn, valfria extra skärmar och flera enheter på samma nätverk.
 
@@ -73,7 +73,7 @@ Lägg dem efter startskriptet, skärmval efter `--`:
 ```text
 scripts/start.sh --no-serial                      demo utan hårdvara
 scripts/start.sh --serial-port COM7               välj USB-port själv (Linux: /dev/ttyACM0)
-scripts/start.sh -- --fullscreen --lang en        helskärm, engelska
+scripts/start.sh -- --fullscreen --lang sv        helskärm, svenskt gränssnitt
 scripts/start.sh -- --profile audience --display 1   publikskärm på skärm 2, inga knappar
 ```
 
@@ -81,7 +81,7 @@ På Windows används `scripts\start_windows.bat` i stället för `scripts/start.
 
 ## Lampor, horn och fler enheter
 
-Den tekniska dokumentationen är på engelska. Installationsguiderna finns på båda språken.
+Den tekniska dokumentationen är på engelska. Installationsguiderna finns på 11 språk.
 
 | Jag vill... | Läs |
 | --- | --- |
@@ -96,7 +96,7 @@ Den tekniska dokumentationen är på engelska. Installationsguiderna finns på b
 | | |
 | --- | --- |
 | [docs/README.md](docs/README.md) | Index över all dokumentation |
-| [docs/install/](docs/install/) | Installationsguider (svenska och engelska) |
+| [docs/install/](docs/install/) | Installationsguider (11 språk) |
 | [structure.md](structure.md) | Var allt finns i källkoden |
 
 ## Utveckling

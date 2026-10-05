@@ -1,12 +1,13 @@
 # Documentation index
 
-**Install (English / Svenska)**
+**Install** (each guide exists in 11 languages: English, Svenska, 中文, हिन्दी, Español, Français, العربية, বাংলা, Português, Русский, اردو; the language
+links are at the top of each guide)
 
-| System | English | Svenska |
-| --- | --- | --- |
-| Windows | [install/windows.md](install/windows.md) | [install/windows.sv.md](install/windows.sv.md) |
-| Linux / macOS | [install/linux.md](install/linux.md) | [install/linux.sv.md](install/linux.sv.md) |
-| Raspberry Pi | [install/raspberry-pi.md](install/raspberry-pi.md) | [install/raspberry-pi.sv.md](install/raspberry-pi.sv.md) |
+| System | Guide |
+| --- | --- |
+| Windows | [install/windows.md](install/windows.md) |
+| Linux / macOS | [install/linux.md](install/linux.md) |
+| Raspberry Pi | [install/raspberry-pi.md](install/raspberry-pi.md) |
 
 **Using it:** [ui.md](ui.md) (screen, keys, profiles) · [audio.md](audio.md) (horn and speakers) ·
 [cluster.md](cluster.md) (several devices on a LAN or by radio)

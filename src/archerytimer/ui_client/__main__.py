@@ -47,7 +47,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     ap.add_argument("--display", type=int, default=0, help="monitor index")
     ap.add_argument("--size", type=parse_size, default=(1280, 720), help="windowed size WxH")
     ap.add_argument("--profile", choices=PROFILES, default="full")
-    ap.add_argument("--lang", choices=["sv", "en"], help="default: saved choice, else sv")
+    ap.add_argument("--lang", choices=["sv", "en"], help="default: saved choice, else en")
     ap.add_argument(
         "--fps", type=int, help="FPS cap (0 = uncapped; default: saved choice, else 60)"
     )
@@ -103,7 +103,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     app = UiApp(
         link,
         renderer,
-        Translator(prefs.lang or "sv"),
+        Translator(prefs.lang or "en"),
         profile=args.profile,
         display=DisplaySettings(
             fps_cap=60 if args.fps is None else args.fps,

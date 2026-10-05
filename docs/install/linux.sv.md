@@ -1,6 +1,8 @@
 # Installera på Linux (och macOS)
 
-[English](linux.md) · [Windows](windows.sv.md) · [Raspberry Pi](raspberry-pi.sv.md) · [Tillbaka till README](../../README.sv.md)
+[English](linux.md) · **Svenska** · [中文](linux.zh.md) · [हिन्दी](linux.hi.md) · [Español](linux.es.md) · [Français](linux.fr.md) · [العربية](linux.ar.md) · [বাংলা](linux.bn.md) · [Português](linux.pt.md) · [Русский](linux.ru.md) · [اردو](linux.ur.md)
+
+[Windows](windows.sv.md) · [Raspberry Pi](raspberry-pi.sv.md) · [Tillbaka till README](../../README.sv.md)
 
 För en Raspberry Pi som startar direkt in i timern, använd i stället [Raspberry Pi-guiden](raspberry-pi.sv.md).
 Den här sidan gäller en vanlig Linux-dator med skrivbord (testat på Debian/Ubuntu-familjen; andra fungerar om de
@@ -45,7 +47,7 @@ scripts/start.sh
 
 - Demo utan lamphårdvara: `scripts/start.sh --no-serial`
 - Helskärm: `scripts/start.sh -- --fullscreen`
-- Engelskt gränssnitt: `scripts/start.sh -- --lang en`
+- Svenskt gränssnitt: `scripts/start.sh -- --lang sv` (språket kan också ändras i inställningsmenyn)
 - Publikskärm på andra skärmen, utan knappar: `scripts/start.sh -- --profile audience --display 1`
 
 Tangenter: **Mellanslag** = den stora knappen, **P** = paus, **Esc** = nödstopp. Se

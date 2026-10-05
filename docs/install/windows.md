@@ -1,6 +1,8 @@
 # Install on Windows 10/11
 
-[Svenska](windows.sv.md) · [Linux](linux.md) · [Raspberry Pi](raspberry-pi.md) · [Back to README](../../README.md)
+**English** · [Svenska](windows.sv.md) · [中文](windows.zh.md) · [हिन्दी](windows.hi.md) · [Español](windows.es.md) · [Français](windows.fr.md) · [العربية](windows.ar.md) · [বাংলা](windows.bn.md) · [Português](windows.pt.md) · [Русский](windows.ru.md) · [اردو](windows.ur.md)
+
+[Linux](linux.md) · [Raspberry Pi](raspberry-pi.md) · [Back to README](../../README.md)
 
 Time needed: about 10 minutes. You need an internet connection for the first setup only.
 
@@ -31,7 +33,7 @@ Double-click **`scripts\start_windows.bat`**. A window with the timer opens.
 
 - No lights hardware yet? Start it from a terminal as `scripts\start_windows.bat --no-serial` for a demo.
 - Fullscreen on a TV: `scripts\start_windows.bat -- --fullscreen`
-- English interface: `scripts\start_windows.bat -- --lang en`
+- Swedish interface: `scripts\start_windows.bat -- --lang sv` (the language can also be changed in the settings menu)
 - Second monitor for the audience, no controls: `scripts\start_windows.bat -- --profile audience --display 1`
 
 (To make a desktop shortcut: right-click `start_windows.bat` → *Send to → Desktop (create shortcut)*.)
